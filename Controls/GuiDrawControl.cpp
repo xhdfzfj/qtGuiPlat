@@ -9,6 +9,7 @@
 GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParent )
 {
     mActivedFlag = false;
+    mDataSourceP = nullptr;
 }
 
 /**

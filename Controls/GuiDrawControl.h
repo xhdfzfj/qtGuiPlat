@@ -4,6 +4,7 @@
 #include <QQuickItem>
 #include <QPainter>
 #include <QtQuick/QQuickPaintedItem>
+#include "../Class/DataSourceClass.h"
 
 class GuiDrawControl : public QQuickPaintedItem
 {
@@ -34,6 +35,8 @@ signals:
 private:
     QColor mBackgroundColor;
     bool mActivedFlag;
+
+    DataSourceClass * mDataSourceP;
 
 };
 
