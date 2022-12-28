@@ -1,6 +1,8 @@
 ﻿#ifndef DISPLAYELEMENTCLASS_H
 #define DISPLAYELEMENTCLASS_H
 
+#include <QString>
+
 typedef enum __DisplayType_e
 {
     DiplayHexDataType,
