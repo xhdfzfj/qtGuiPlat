@@ -1,4 +1,4 @@
-#include "DataSourceClass.h"
+﻿#include "DataSourceClass.h"
 
 /**
  * @brief DataSourceClass::DataSourceClass
@@ -29,7 +29,14 @@ void DataSourceClass::sub_SetFileDataSource( std::string pPath )
     }
 
     mFileDataObjP = new FileDisplayClass( pPath );
-
+    if( mFileDataObjP->fun_StartFileData() )
+    {
+        mDataSourceType = FileDataType;
+    }
+    else
+    {
+        mDataSourceType = NothingType;
+    }
 }
 
 /**
@@ -42,4 +49,24 @@ void DataSourceClass::sub_ClearDataSource()
        delete mFileDataObjP;
        mFileDataObjP = nullptr;
    }
+}
+
+/**
+ * @brief DataSourceClass::GetData
+ * @param pSaveBufP
+ * @param pLen
+ * @return
+ */
+int DataSourceClass::GetData( unsigned char * pSaveBufP, int pLen )
+{
+    int _retValue;
+
+    _retValue = 0;
+
+    if( mDataSourceType == FileDataType )
+    {
+        _retValue = mFileDataObjP->GetData( pSaveBufP, pLen, 0 );
+    }
+
+    return _retValue;
 }

@@ -1,4 +1,4 @@
-#ifndef DATASOURCECLASS_H
+﻿#ifndef DATASOURCECLASS_H
 #define DATASOURCECLASS_H
 
 #include <iostream>
@@ -18,6 +18,7 @@ public:
     virtual ~DataSourceClass();
 
     void sub_SetFileDataSource( std::string pPath );
+    int GetData( unsigned char * pSaveBufP, int pLen );
 
 private:
     DataSourceType_e mDataSourceType;

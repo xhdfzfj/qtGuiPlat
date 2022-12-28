@@ -39,21 +39,40 @@ Window {
                 }
             }
 
-            GuiDrawControl
+            Rectangle
             {
-                id:guiDrawControl
+
                 Layout.preferredHeight: guiMainRectangle.height -guiToolBarRect.height
                 Layout.preferredWidth: guiMainRectangle.width
 
-                fillColor: "black"
-                onWidthChanged:
+                Row
                 {
-                    console.log( "GuiDrawControl onWidthChanaged:%d", guiToolBarRect.width )
-                    onGuiDrawControlSizeChanage()
-                }
-                onHeightChanged:
-                {
-                    onGuiDrawControlSizeChanage()
+                    anchors.fill: parent
+
+                    GuiDrawControl
+                    {
+                        id:guiDrawControl
+                        Layout.fillWidth: parent.width
+                        Layout.fillHeight: parent.height
+
+                        fillColor: "black"
+                        onWidthChanged:
+                        {
+                            console.log( "GuiDrawControl onWidthChanaged:%d", guiToolBarRect.width )
+                            onGuiDrawControlSizeChanage()
+                        }
+                        onHeightChanged:
+                        {
+                            onGuiDrawControlSizeChanage()
+                        }
+                    }
+
+//                    Rectangle
+//                    {
+//                        color:"red"
+
+//                    }
+
                 }
             }
         }
@@ -91,8 +110,10 @@ Window {
 
     Component.onCompleted:
     {
-        console.log( "Componet.completed-->%d--%d", guiToolBarRect.width, guiToolBarRect.height );
-        console.log( "Componet.completed-->%d--%d", guiDrawControl.width, guiDrawControl.height );
+        //console.log( "Componet.completed ", guiToolBarRect.width, guiToolBarRect.height );
+        console.log( "Componet.completed ", guiDrawControl.width, guiDrawControl.height );
+        guiDrawControl.width = guiToolBarRect.width
+        guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
         guiDrawControl.sub_ComponetLoadend();
     }
 }

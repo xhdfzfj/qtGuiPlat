@@ -5,8 +5,14 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+win32
+{
+    win32:DEFINES += XHD_WINDOWS
+}
+
 SOURCES += \
         Class/DataSourceClass.cpp \
+        Class/DisplayElementClass.cpp \
         Class/FileDisplayClass.cpp \
         Controls/GuiDrawControl.cpp \
         main.cpp
@@ -26,5 +32,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     Class/DataSourceClass.h \
+    Class/DisplayElementClass.h \
     Class/FileDisplayClass.h \
     Controls/GuiDrawControl.h

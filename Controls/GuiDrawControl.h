@@ -19,6 +19,8 @@ public:
  private:
     void sub_ConnectSignal();
     void sub_DrawBackground( QPainter * pPainter );  //绘制背景
+    void sub_ReadySetHexDataDiaplay( void );
+    void sub_CreateDisplayHexData( uint8_t * pDataP, int pNeedLen, int pLen );
 
     /*********************************
      * 系统重载
@@ -35,6 +37,12 @@ signals:
 private:
     QColor mBackgroundColor;
     bool mActivedFlag;
+    QFont mFont;
+    int mHexDataWidth;
+    int mHexSpaceWidth;
+    int mHexDataHeight;
+    int mHexDataLineByteS;
+    int mHexDataLineS;
 
     DataSourceClass * mDataSourceP;
 

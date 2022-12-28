@@ -92,7 +92,87 @@ void GuiDrawControl::sub_DisplayFile( QUrl pPath )
         std::string _tmpStr;
 
         _tmpStr = pPath.path().toStdString();
+
+        if( mDataSourceP == nullptr )
+        {
+            mDataSourceP = new DataSourceClass();
+        }
+
+        mDataSourceP->sub_SetFileDataSource( _tmpStr );
+
+        sub_ReadySetHexDataDiaplay();
     }
+}
+
+/**
+ * @brief GuiDrawControl::sub_ReadySetHexDataDiaplay
+ */
+void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
+{
+    QFont _tmpFont( "SimSun", 16 );
+    QFontMetrics _tmpFm( _tmpFont );
+
+    QString _tmpTestString = "FF";
+
+    int _width = _tmpFm.width( _tmpTestString );
+    int _height = _tmpFm.height();
+
+    _tmpTestString = "F";
+
+    int _spaceWidth = _tmpFm.width( _tmpTestString );
+
+    mFont = _tmpFont;
+    mHexDataWidth = _width;
+    mHexSpaceWidth = _spaceWidth;
+    mHexDataHeight = _height;
+
+    int _tmpLineByteS;
+    int _tmpLineS;
+    int _x;
+
+    qreal _windowWidth = width();
+    qreal _windowHeight = height();
+
+    _x = 0;
+    _windowWidth -= 10; //扣除行开头的5个像素与结束的5个像素
+    _windowHeight -= 10; //扣除与顶部的间隔5个像素与结束的5个像素
+
+    do
+    {
+        _tmpLineByteS = ( _windowWidth - _x ) / ( mHexDataWidth + mHexSpaceWidth );
+        _x += mHexSpaceWidth;
+        qDebug() << "_tmpLineByteS " << _tmpLineByteS;
+    }while( ( _tmpLineByteS & 0x07 ) != 0 );
+
+    _tmpLineS = _windowHeight / _height;
+
+    mHexDataLineByteS = _tmpLineByteS;
+    mHexDataLineS = _tmpLineS;
+
+    unsigned char * _tmpCurrentPageBufP;
+
+    _tmpCurrentPageBufP = new unsigned char [ _tmpLineS * _tmpLineByteS ];
+
+    int i = mDataSourceP->GetData( _tmpCurrentPageBufP, _tmpLineByteS * _tmpLineS );
+
+    if( i > 0 )
+    {
+        sub_CreateDisplayHexData( _tmpCurrentPageBufP, _tmpLineByteS * _tmpLineS, i );
+        delete [] _tmpCurrentPageBufP;
+    }
+}
+
+/**
+ * @brief GuiDrawControl::sub_CreateDisplayHexData
+ * @param pDataBufP
+ * @param pNeedLen
+ *          要求显示的长度
+ * @param pLen
+ *          实际要显示的长度
+ */
+void GuiDrawControl::sub_CreateDisplayHexData( uint8_t * pDataBufP, int pNeedLen, int pLen )
+{
+
 }
 
 /**
@@ -104,5 +184,5 @@ void GuiDrawControl::paint( QPainter * pPainter )
 {
     //paint( pPainter );  //调用基类的重绘函数
 
-    sub_DrawBackground( pPainter );
+    //sub_DrawBackground( pPainter );
 }
