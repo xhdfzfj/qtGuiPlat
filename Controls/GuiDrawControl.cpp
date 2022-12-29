@@ -92,6 +92,8 @@ void GuiDrawControl::sub_ComponetLoadend( QObject * pObjectP )
     mActivedFlag = true;
     mBackgroundColor = fillColor();
 
+    mScrollBarObjP = pObjectP;
+
     update();
 
     //QQmlProperty( pObjectP, "contentHeight").write( height() + 100 );
@@ -168,6 +170,8 @@ void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
     mHexDataLineByteS = _tmpLineByteS;
     mHexDataLineS = _tmpLineS;
 
+
+
     unsigned char * _tmpCurrentPageBufP;
 
     _tmpCurrentPageBufP = new unsigned char [ _tmpLineS * _tmpLineByteS ];
@@ -231,6 +235,15 @@ void GuiDrawControl::sub_CreateDisplayHexData( uint8_t * pDataBufP, int pNeedLen
 
     mCurrX = _x;
     mCurrY = _y;
+}
+
+/**
+ * @brief GuiDrawControl::sub_ScrollBarChanage
+ * @param pPosition
+ */
+void GuiDrawControl::sub_ScrollBarChanage( qreal pPosition )
+{
+    qDebug() << "Scrollbar Postion " << pPosition;
 }
 
 /**

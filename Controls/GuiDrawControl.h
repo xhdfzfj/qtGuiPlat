@@ -5,11 +5,7 @@
 #include <QPainter>
 #include <list>
 #include <QtQuick/QQuickPaintedItem>
-<<<<<<< Updated upstream
 #include "../Class/ClearObjectInterface.h"
-=======
-#include <list>
->>>>>>> Stashed changes
 #include "../Class/DisplayElementClass.h"
 #include "../Class/DataSourceClass.h"
 
@@ -26,6 +22,7 @@ public:
     Q_INVOKABLE void sub_ComponetLoadend( QObject * pObjectP );
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
+    Q_INVOKABLE void sub_ScrollBarChanage( qreal pPosition );
  private:
     void sub_ConnectSignal();
     void sub_DrawBackground( QPainter * pPainter );  //绘制背景
@@ -57,15 +54,13 @@ private:
     int mHexDataLineByteS;
     int mHexDataLineS;
 
-<<<<<<< Updated upstream
     int mCurrX, mCurrY;
-=======
-    std::list<DisplayElementClass * > mDisplayElementS;
->>>>>>> Stashed changes
 
     DataSourceClass * mDataSourceP;
 
     std::list< DisplayElementClass * > mDisplayElementS;
+
+    QObject * mScrollBarObjP;
 };
 
 #endif // GUIDRAWCONTROL_H

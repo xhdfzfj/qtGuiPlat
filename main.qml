@@ -32,7 +32,7 @@ Window {
             {
                 id:guiToolBarRect
                 Layout.preferredHeight: 80
-                Layout.preferredWidth: guiMainRectangle.width
+                Layout.preferredWidth: guiMainWindow.width
 
                 Button
                 {
@@ -95,6 +95,11 @@ Window {
                     opacity: 1
                     visible: true
                     orientation: Qt.Vertical
+                    onPositionChanged:
+                    {
+                        console.log( "scrollbar ", position );
+                        guiDrawControl.sub_ScrollBarChanage( position );
+                    }
                 }
             }
         }
@@ -135,11 +140,11 @@ Window {
 
     Component.onCompleted:
     {
-        //console.log( "Componet.completed ", guiToolBarRect.width, guiToolBarRect.height );
+        console.log( "Componet.completed ", guiToolBarRect.width, guiToolBarRect.height );
         console.log( "Componet.completed ", guiDrawControl.width, guiDrawControl.height );
         guiDrawControl.width = guiToolBarRect.width - verticalScrollBar.width;
-        guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
+        guiDrawControl.height = guiMainWindow.height -guiToolBarRect.height;
 
-        guiDrawControl.sub_ComponetLoadend();
+        guiDrawControl.sub_ComponetLoadend( verticalScrollBar );
     }
 }
