@@ -5,7 +5,11 @@
 #include <QPainter>
 #include <list>
 #include <QtQuick/QQuickPaintedItem>
+<<<<<<< Updated upstream
 #include "../Class/ClearObjectInterface.h"
+=======
+#include <list>
+>>>>>>> Stashed changes
 #include "../Class/DisplayElementClass.h"
 #include "../Class/DataSourceClass.h"
 
@@ -53,7 +57,11 @@ private:
     int mHexDataLineByteS;
     int mHexDataLineS;
 
+<<<<<<< Updated upstream
     int mCurrX, mCurrY;
+=======
+    std::list<DisplayElementClass * > mDisplayElementS;
+>>>>>>> Stashed changes
 
     DataSourceClass * mDataSourceP;
 
