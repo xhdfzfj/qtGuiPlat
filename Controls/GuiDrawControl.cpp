@@ -1,5 +1,6 @@
 ﻿#include <QtDebug>
 #include <QBrush>
+#include <QQmlProperties>
 #include "GuiDrawControl.h"
 
 /**
@@ -84,7 +85,7 @@ void GuiDrawControl::sub_DrawBackground( QPainter * pPainter )
 /**
  * @brief GuiDrawControl::sub_ComponetLoadend
  */
-void GuiDrawControl::sub_ComponetLoadend()
+void GuiDrawControl::sub_ComponetLoadend( QObject * pObjectP )
 {
     qDebug() << __FUNCTION__ << " width:" << width() << " height:" << height();
 
@@ -92,6 +93,8 @@ void GuiDrawControl::sub_ComponetLoadend()
     mBackgroundColor = fillColor();
 
     update();
+
+    //QQmlProperty( pObjectP, "contentHeight").write( height() + 100 );
 }
 
 /**

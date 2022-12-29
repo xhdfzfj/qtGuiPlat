@@ -19,7 +19,7 @@ public:
     GuiDrawControl( QQuickItem * pParent = nullptr );
     virtual ~GuiDrawControl();
 
-    Q_INVOKABLE void sub_ComponetLoadend();
+    Q_INVOKABLE void sub_ComponetLoadend( QObject * pObjectP );
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
  private:

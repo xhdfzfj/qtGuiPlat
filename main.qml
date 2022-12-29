@@ -12,6 +12,15 @@ Window {
     title: qsTr("图形平台")
     id:guiMainWindow
 
+    onWidthChanged:
+    {
+        onGuiWindowSizeChanage()
+    }
+    onHeightChanged:
+    {
+        onGuiWindowSizeChanage()
+    }
+
     Rectangle
     {
         anchors.fill: parent
@@ -45,34 +54,47 @@ Window {
                 Layout.preferredHeight: guiMainRectangle.height -guiToolBarRect.height
                 Layout.preferredWidth: guiMainRectangle.width
 
-                Row
-                {
-                    anchors.fill: parent
+                //Row
+                //{
+                //    anchors.fill:parent
+
+//                    Flickable
+//                    {
+//                        id:guiDrawFlickable
+//                        //anchors.fill: parent
+//                        clip: true
+
+//                        GuiDrawControl
+//                        {
+//                            id:guiDrawControl
+
+//                            fillColor: "black"
+//                        }
+//                    }
 
                     GuiDrawControl
                     {
                         id:guiDrawControl
-                        Layout.fillWidth: parent.width
-                        Layout.fillHeight: parent.height
 
                         fillColor: "black"
-                        onWidthChanged:
-                        {
-                            console.log( "GuiDrawControl onWidthChanaged:%d", guiToolBarRect.width )
-                            onGuiDrawControlSizeChanage()
-                        }
-                        onHeightChanged:
-                        {
-                            onGuiDrawControlSizeChanage()
-                        }
                     }
-
 //                    Rectangle
 //                    {
 //                        color:"red"
 
 //                    }
 
+                //}
+
+                ScrollBar
+                {
+                    id: verticalScrollBar
+                    width: 16;
+                    height: guiDrawControl.height - 5
+                    anchors.left: guiDrawControl.right
+                    opacity: 1
+                    visible: true
+                    orientation: Qt.Vertical
                 }
             }
         }
@@ -103,8 +125,11 @@ Window {
     }
 
 
-    function onGuiDrawControlSizeChanage()
+    function onGuiWindowSizeChanage()
     {
+        guiDrawControl.width = guiToolBarRect.width - verticalScrollBar.width;
+        guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
+
         guiDrawControl.sub_SizeChanage()
     }
 
@@ -112,8 +137,9 @@ Window {
     {
         //console.log( "Componet.completed ", guiToolBarRect.width, guiToolBarRect.height );
         console.log( "Componet.completed ", guiDrawControl.width, guiDrawControl.height );
-        guiDrawControl.width = guiToolBarRect.width
+        guiDrawControl.width = guiToolBarRect.width - verticalScrollBar.width;
         guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
+
         guiDrawControl.sub_ComponetLoadend();
     }
 }
