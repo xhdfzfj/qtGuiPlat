@@ -17,7 +17,23 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
  */
 GuiDrawControl::~GuiDrawControl()
 {
+    sub_ClearObject();
+}
 
+/**
+ * @brief GuiDrawControl::sub_ClearObject
+ */
+void GuiDrawControl::sub_ClearObject()
+{
+    DisplayElementClass * _tmpObjP;
+
+    while( !mDisplayElementS.empty() )
+    {
+        _tmpObjP = mDisplayElementS.front();
+        mDisplayElementS.pop_front();
+
+        delete _tmpObjP;
+    }
 }
 
 /**
@@ -134,8 +150,8 @@ void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
     qreal _windowHeight = height();
 
     _x = 0;
-    _windowWidth -= 10; //扣除行开头的5个像素与结束的5个像素
-    _windowHeight -= 10; //扣除与顶部的间隔5个像素与结束的5个像素
+    _windowWidth -= 2 * X_SPACE; //扣除行开头的5个像素与结束的5个像素
+    _windowHeight -= 2 * Y_SPACE; //扣除与顶部的间隔5个像素与结束的5个像素
 
     do
     {
@@ -155,10 +171,15 @@ void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
 
     int i = mDataSourceP->GetData( _tmpCurrentPageBufP, _tmpLineByteS * _tmpLineS );
 
+    mCurrX = X_SPACE;
+    mCurrY = Y_SPACE;
+
     if( i > 0 )
     {
         sub_CreateDisplayHexData( _tmpCurrentPageBufP, _tmpLineByteS * _tmpLineS, i );
         delete [] _tmpCurrentPageBufP;
+
+        update();
     }
 }
 
@@ -172,7 +193,69 @@ void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
  */
 void GuiDrawControl::sub_CreateDisplayHexData( uint8_t * pDataBufP, int pNeedLen, int pLen )
 {
+    int _x, _y;
+    QString _tmpStr;
+    uint8_t * _tmpP;
+    int _tmpLen;
+    int i;
+    DisplayElementClass * _tmpDisplayObjP;
 
+    _x = mCurrX;
+    _y = mCurrY;
+
+    _tmpP = pDataBufP;
+
+    for( i = 0; i < pLen; i++ )
+    {
+        if( /*( i != 0 ) &&*/ ( ( i % mHexDataLineByteS ) == 0 ) )
+        {
+            _y += mHexDataHeight;
+            _x = mCurrX;
+        }
+
+        qDebug() << "x " << _x << " _y " << _y;
+
+        _tmpStr = QString( "%1" ).arg( ( qulonglong )_tmpP[ i ], 2, 16, QLatin1Char( '0' ) );
+        _tmpStr = _tmpStr.toUpper();
+
+        _tmpDisplayObjP = new DisplayElementClass( DiplayHexDataType, _x, _y, _tmpStr );
+        _tmpDisplayObjP->SetFront( Qt::blue );
+
+        mDisplayElementS.push_back( _tmpDisplayObjP );
+
+        _x += ( mHexDataWidth + mHexSpaceWidth );
+    }
+
+    mCurrX = _x;
+    mCurrY = _y;
+}
+
+/**
+ * @brief GuiDrawControl::sub_DrawDisplayElementS
+ * @param pPainter
+ */
+void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
+{
+    QPen _tmpPend;
+    QColor _tmpColor;
+    QPoint _tmpPoint;
+
+    pPainter->setFont( mFont );
+
+    foreach ( DisplayElementClass * _tmpDisplayObjP, mDisplayElementS )
+    {
+        _tmpColor = _tmpDisplayObjP->GetFrontColor();
+
+        _tmpPend.setColor( _tmpColor );
+        _tmpPoint = _tmpDisplayObjP->GetPoint();
+
+        pPainter->setPen( _tmpPend );
+
+        if( _tmpDisplayObjP->GetDisplayType() == DiplayHexDataType )
+        {
+            pPainter->drawText( _tmpPoint, _tmpDisplayObjP->GetDiplayString() );
+        }
+    }
 }
 
 /**
@@ -185,4 +268,9 @@ void GuiDrawControl::paint( QPainter * pPainter )
     //paint( pPainter );  //调用基类的重绘函数
 
     //sub_DrawBackground( pPainter );
+
+    if( !mDisplayElementS.empty() )
+    {
+        sub_DrawDisplayElementS( pPainter );
+    }
 }

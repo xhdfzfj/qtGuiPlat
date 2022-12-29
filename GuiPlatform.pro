@@ -11,6 +11,7 @@ win32
 }
 
 SOURCES += \
+        Class/ClearObjectInterface.cpp \
         Class/DataSourceClass.cpp \
         Class/DisplayElementClass.cpp \
         Class/FileDisplayClass.cpp \
@@ -31,6 +32,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    Class/ClearObjectInterface.h \
     Class/DataSourceClass.h \
     Class/DisplayElementClass.h \
     Class/FileDisplayClass.h \

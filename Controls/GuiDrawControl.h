@@ -3,10 +3,16 @@
 
 #include <QQuickItem>
 #include <QPainter>
+#include <list>
 #include <QtQuick/QQuickPaintedItem>
+#include "../Class/ClearObjectInterface.h"
+#include "../Class/DisplayElementClass.h"
 #include "../Class/DataSourceClass.h"
 
-class GuiDrawControl : public QQuickPaintedItem
+#define X_SPACE  5
+#define Y_SPACE  5
+
+class GuiDrawControl : public QQuickPaintedItem, ClearObjectInterface
 {
     Q_OBJECT
 public:
@@ -19,8 +25,11 @@ public:
  private:
     void sub_ConnectSignal();
     void sub_DrawBackground( QPainter * pPainter );  //绘制背景
+    void sub_DrawDisplayElementS( QPainter * pPainter );  //绘制内容
     void sub_ReadySetHexDataDiaplay( void );
     void sub_CreateDisplayHexData( uint8_t * pDataP, int pNeedLen, int pLen );
+
+    void sub_ClearObject();
 
     /*********************************
      * 系统重载
@@ -44,8 +53,11 @@ private:
     int mHexDataLineByteS;
     int mHexDataLineS;
 
+    int mCurrX, mCurrY;
+
     DataSourceClass * mDataSourceP;
 
+    std::list< DisplayElementClass * > mDisplayElementS;
 };
 
 #endif // GUIDRAWCONTROL_H
