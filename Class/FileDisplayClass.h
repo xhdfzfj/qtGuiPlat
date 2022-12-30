@@ -13,6 +13,9 @@ public:
 
     bool fun_StartFileData();
     int GetData( unsigned char * pSaveBufP, int pLen, int pDriect );
+    int GetAllDataCount();
+    void sub_SetFileDataOffset( int pNewOffset );
+
 
 private:
     std::string mFilePath;

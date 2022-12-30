@@ -70,3 +70,33 @@ int DataSourceClass::GetData( unsigned char * pSaveBufP, int pLen )
 
     return _retValue;
 }
+
+/**
+ * @brief DataSourceClass::GetAllDataLen
+ * @return
+ */
+int DataSourceClass::GetAllDataLen( void )
+{
+    int _retValue;
+
+    _retValue = 0;
+
+    if( mDataSourceType == FileDataType )
+    {
+        _retValue = mFileDataObjP->GetAllDataCount();
+    }
+
+    return _retValue;
+}
+
+/**
+ * @brief DataSourceClass::sub_SetDataOffset
+ * @param pNewOffset
+ */
+void DataSourceClass::sub_SetDataOffset( int pNewOffset )
+{
+    if( mDataSourceType == FileDataType )
+    {
+        mFileDataObjP->sub_SetFileDataOffset( pNewOffset );
+    }
+}

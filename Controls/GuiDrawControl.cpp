@@ -19,6 +19,11 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
 GuiDrawControl::~GuiDrawControl()
 {
     sub_ClearObject();
+
+    if( mDataSourceP != nullptr )
+    {
+        delete mDataSourceP;
+    }
 }
 
 /**
@@ -51,9 +56,18 @@ void GuiDrawControl::sub_ConnectSignal()
  */
 void GuiDrawControl::sub_SizeChanage()
 {
+    sub_ClearObject();
+
     if( mActivedFlag )
     {
-        qDebug() << "test test test";
+        if( mDataSourceP != nullptr )
+        {
+            if( mDataSourceP->GetDataSourceType() == FileDataType )
+            {
+                sub_ReadySetHexDataDiaplay();
+                update();
+            }
+        }
     }
 }
 
@@ -166,11 +180,10 @@ void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
     }while( ( _tmpLineByteS & 0x07 ) != 0 );
 
     _tmpLineS = _windowHeight / _height;
+    mAllLineS = ( mDataSourceP->GetAllDataLen() + ( _tmpLineByteS - 1 ) ) / _tmpLineByteS;
 
     mHexDataLineByteS = _tmpLineByteS;
     mHexDataLineS = _tmpLineS;
-
-
 
     unsigned char * _tmpCurrentPageBufP;
 
@@ -244,6 +257,59 @@ void GuiDrawControl::sub_CreateDisplayHexData( uint8_t * pDataBufP, int pNeedLen
 void GuiDrawControl::sub_ScrollBarChanage( qreal pPosition )
 {
     qDebug() << "Scrollbar Postion " << pPosition;
+
+    int _tmpLine;
+    int _tmpPos;
+
+    if( mDataSourceP != nullptr )
+    {
+        if( mDataSourceP->GetDataSourceType() == FileDataType )
+        {
+            if( mHexDataLineS < mAllLineS )
+            {
+                //一页显示不完
+                _tmpLine = pPosition * mAllLineS;
+                _tmpLine -= ( mHexDataLineS / 2 );
+                if( _tmpLine < 0 )
+                {
+                    _tmpLine = 0;
+                }
+                _tmpPos = ( _tmpLine * mHexDataLineByteS );
+
+                qDebug() << "new pos " << _tmpPos;
+
+                mDataSourceP->sub_SetDataOffset( _tmpPos );
+                sub_RefreshDisplayElement();
+            }
+        }
+    }
+}
+
+/**
+ * @brief GuiDrawControl::sub_RefreshDisplayElement
+ */
+void GuiDrawControl::sub_RefreshDisplayElement( void )
+{
+    sub_ClearObject();
+
+    if( mDataSourceP != nullptr )
+    {
+        if( mDataSourceP->GetDataSourceType() == FileDataType )
+        {
+            unsigned char * _tmpCurrentPageBufP;
+
+            _tmpCurrentPageBufP = new unsigned char [ mHexDataLineS * mHexDataLineByteS ];
+
+            mCurrX = X_SPACE;
+            mCurrY= Y_SPACE;
+
+            int i = mDataSourceP->GetData( _tmpCurrentPageBufP, mHexDataLineS * mHexDataLineByteS );
+            sub_CreateDisplayHexData( _tmpCurrentPageBufP, mHexDataLineS * mHexDataLineByteS, i );
+            delete [] _tmpCurrentPageBufP;
+        }
+    }
+
+    update();
 }
 
 /**

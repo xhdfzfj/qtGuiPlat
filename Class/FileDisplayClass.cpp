@@ -98,3 +98,44 @@ int FileDisplayClass::GetData( unsigned char * pSaveBufP, int pLen, int pDriect 
 
     return _retValue;
 }
+
+/**
+ * @brief FileDisplayClass::GetAllDataCount
+ * @return
+ */
+int FileDisplayClass::GetAllDataCount()
+{
+    int _retValue;
+
+    _retValue = 0;
+
+    if( mActiveFlag )
+    {
+        _retValue = mFileLen;
+    }
+
+    return _retValue;
+}
+
+/**
+ * @brief FileDisplayClass::sub_SetDataOffset
+ * @param pNewOffset
+ */
+void FileDisplayClass::sub_SetFileDataOffset( int pNewOffset )
+{
+    int _tmpValue;
+
+    if( mActiveFlag )
+    {
+        mInFile.seekg( pNewOffset, std::ios::beg );
+        mCurrentPos = pNewOffset;
+
+        _tmpValue = mInFile.tellg();
+
+        if( _tmpValue == -1 )
+        {
+            mInFile.clear();
+            mInFile.seekg( pNewOffset, std::ios::beg );
+        }
+    }
+}

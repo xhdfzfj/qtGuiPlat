@@ -23,12 +23,14 @@ public:
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
     Q_INVOKABLE void sub_ScrollBarChanage( qreal pPosition );
+
  private:
     void sub_ConnectSignal();
     void sub_DrawBackground( QPainter * pPainter );  //绘制背景
     void sub_DrawDisplayElementS( QPainter * pPainter );  //绘制内容
     void sub_ReadySetHexDataDiaplay( void );
     void sub_CreateDisplayHexData( uint8_t * pDataP, int pNeedLen, int pLen );
+    void sub_RefreshDisplayElement( void );
 
     void sub_ClearObject();
 
@@ -53,6 +55,7 @@ private:
     int mHexDataHeight;
     int mHexDataLineByteS;
     int mHexDataLineS;
+    int mAllLineS;
 
     int mCurrX, mCurrY;
 

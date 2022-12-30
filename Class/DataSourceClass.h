@@ -19,6 +19,9 @@ public:
 
     void sub_SetFileDataSource( std::string pPath );
     int GetData( unsigned char * pSaveBufP, int pLen );
+    int GetAllDataLen( void );
+    DataSourceType_e GetDataSourceType() { return mDataSourceType; }
+    void sub_SetDataOffset( int pNewOffset );
 
 private:
     DataSourceType_e mDataSourceType;

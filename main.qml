@@ -46,6 +46,15 @@ Window {
                         fds.open()
                     }
                 }
+
+                Button
+                {
+                    id:selfFitBtn
+                    height: 25
+                    text:qsTr("适应显示")
+                    anchors.top: openBtn.top
+                    x: 120
+                }
             }
 
             Rectangle
@@ -125,14 +134,14 @@ Window {
             {
                 //labels.text = "";
                 console.log("Canceled");
-                Qt.quit();
+                //Qt.quit();
             }
     }
 
 
     function onGuiWindowSizeChanage()
     {
-        guiDrawControl.width = guiToolBarRect.width - verticalScrollBar.width;
+        guiDrawControl.width = guiMainWindow.width - verticalScrollBar.width;
         guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
 
         guiDrawControl.sub_SizeChanage()
