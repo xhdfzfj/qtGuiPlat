@@ -32,8 +32,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    Class/BinaryTreeClass.h \
     Class/ClearObjectInterface.h \
     Class/DataSourceClass.h \
     Class/DisplayElementClass.h \
     Class/FileDisplayClass.h \
+    Class/TreeNodeClass.h \
     Controls/GuiDrawControl.h

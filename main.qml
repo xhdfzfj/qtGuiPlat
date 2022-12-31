@@ -51,9 +51,22 @@ Window {
                 {
                     id:selfFitBtn
                     height: 25
-                    text:qsTr("适应显示")
+                    text:qsTr("树显示")
                     anchors.top: openBtn.top
                     x: 120
+                    onClicked:
+                    {
+                        guiDrawControl.sub_CreateBinaryTree( 10 );
+                    }
+
+                    ToolTip
+                    {
+                        delay: 50   //50ms后出现
+                        timeout: 2000 //2秒后消失
+                        visible: selfFitBtn.hovered //mouse进入button中
+                        text:qsTr( "生成高度10的二叉树" )
+                    }
+
                 }
             }
 

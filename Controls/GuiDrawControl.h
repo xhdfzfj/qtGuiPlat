@@ -8,6 +8,7 @@
 #include "../Class/ClearObjectInterface.h"
 #include "../Class/DisplayElementClass.h"
 #include "../Class/DataSourceClass.h"
+#include "../Class/BinaryTreeClass.h"
 
 #define X_SPACE  5
 #define Y_SPACE  5
@@ -23,6 +24,7 @@ public:
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
     Q_INVOKABLE void sub_ScrollBarChanage( qreal pPosition );
+    Q_INVOKABLE void sub_CreateBinaryTree( int pHight );
 
  private:
     void sub_ConnectSignal();
@@ -64,6 +66,8 @@ private:
     std::list< DisplayElementClass * > mDisplayElementS;
 
     QObject * mScrollBarObjP;
+
+    BinaryTreeClass< int, int > * mBinTreeObjP;
 };
 
 #endif // GUIDRAWCONTROL_H

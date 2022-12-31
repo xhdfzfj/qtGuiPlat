@@ -1,6 +1,8 @@
-﻿#include <QtDebug>
+﻿#include <cmath>
+#include <QtDebug>
 #include <QBrush>
 #include <QQmlProperties>
+#include <QTime>
 #include "GuiDrawControl.h"
 
 /**
@@ -11,6 +13,7 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
 {
     mActivedFlag = false;
     mDataSourceP = nullptr;
+    mBinTreeObjP = nullptr;
 }
 
 /**
@@ -69,6 +72,52 @@ void GuiDrawControl::sub_SizeChanage()
             }
         }
     }
+}
+
+/**
+ * @brief GuiDrawControl::sub_CreateBinaryTree
+ * @param pHeight
+ */
+void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
+{
+    if( mBinTreeObjP != nullptr )
+    {
+        delete mBinTreeObjP;
+    }
+
+    mBinTreeObjP = new BinaryTreeClass<int, int>();
+
+    QList< int > _tmpNumberS;
+    int i, j;
+    int _tmpLen;
+
+    _tmpLen = pow( 2, pHeight ) - 1;
+    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
+    for( i = 0; i < _tmpLen; i++ )
+    {
+        _tmpNumberS.append(qrand());
+        bool flag=true;
+        while(flag)
+        {
+            for(j=0;j<i;j++)
+            {
+                if(_tmpNumberS[i]==_tmpNumberS[j])
+                {
+                    break;
+                }
+            }
+            if(j<i)
+            {
+                _tmpNumberS[i]=rand();
+            }
+            if(j==i)
+            {
+                flag=!flag;
+            }
+        }
+    }
+
+    mBinTreeObjP->sub_CreateTree( _tmpNumberS.toStdList() );
 }
 
 /**
