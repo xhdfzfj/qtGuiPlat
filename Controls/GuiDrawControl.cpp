@@ -3,6 +3,7 @@
 #include <QBrush>
 #include <QQmlProperties>
 #include <QTime>
+#include <QRandomGenerator>
 #include "GuiDrawControl.h"
 
 /**
@@ -92,10 +93,11 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int _tmpLen;
 
     _tmpLen = pow( 2, pHeight ) - 1;
+    //QRandomGenerator::global()->generate()
     qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
     for( i = 0; i < _tmpLen; i++ )
     {
-        _tmpNumberS.append(qrand());
+        _tmpNumberS.append(qrand() % 10000 );
         bool flag=true;
         while(flag)
         {
@@ -108,7 +110,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
             }
             if(j<i)
             {
-                _tmpNumberS[i]=rand();
+                _tmpNumberS[i]=rand() % 10000;
             }
             if(j==i)
             {
@@ -117,7 +119,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
         }
     }
 
-    mBinTreeObjP->sub_CreateTree( _tmpNumberS.toStdList() );
+    mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
 }
 
 /**
@@ -389,14 +391,6 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
     }
 }
 
-/**
- * @brief GuiDrawControl::sub_DisplayFitToOnePage
- *      显示到一个屏上
- */
-void GuiDrawControl::sub_DisplayFitToOnePage()
-{
-
-}
 
 /**
  * @brief GuiDrawControl::paint

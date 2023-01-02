@@ -24,11 +24,7 @@ public:
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
     Q_INVOKABLE void sub_ScrollBarChanage( qreal pPosition );
-<<<<<<< Updated upstream
     Q_INVOKABLE void sub_CreateBinaryTree( int pHight );
-=======
-    Q_INVOKABLE void sub_DisplayFitToOnePage();
->>>>>>> Stashed changes
 
  private:
     void sub_ConnectSignal();

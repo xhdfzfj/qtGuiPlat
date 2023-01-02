@@ -20,9 +20,13 @@ public:
     {
         if( mFreeContentFlag )
         {
-            delete mContentValue;
+            //delete mContentValue;
         }
     }
+
+public:
+    bool GetFreeFlag() { return mFreeContentFlag; }
+    compareT GetCompareValue() { return mCompareValue; }
 
 public:
     class TreeNodeClass * mParentObjP;
