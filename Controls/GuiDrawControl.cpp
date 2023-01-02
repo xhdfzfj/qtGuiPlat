@@ -390,6 +390,15 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
 }
 
 /**
+ * @brief GuiDrawControl::sub_DisplayFitToOnePage
+ *      显示到一个屏上
+ */
+void GuiDrawControl::sub_DisplayFitToOnePage()
+{
+
+}
+
+/**
  * @brief GuiDrawControl::paint
  * @param pPainter
  *      重绘事件的生载
