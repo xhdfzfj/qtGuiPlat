@@ -2,6 +2,8 @@
 #define BINARYTREECLASS_H
 
 #include <list>
+#include <stack>
+#include <iostream>
 #include "./TreeNodeClass.h"
 
 template< typename compareT, typename contentT >
@@ -99,7 +101,61 @@ public:
      */
     int fun_GetTreeHeight()
     {
+        int _retValue;
+        int _tmpCurrLayer;
+        int _tmpMaxLayer;
+        std::stack< TreeNodeClass< compareT, contentT > * > _tmpStack;
+        TreeNodeClass< compareT, contentT > * _tmpNodeP;
 
+        _retValue = 0;
+
+        _tmpNodeP = mRootObjP;
+        if( _tmpNodeP != nullptr )
+        {
+            _tmpCurrLayer = 1;
+            _tmpMaxLayer = _tmpCurrLayer;
+            _tmpNodeP->sub_SetLayer( _tmpCurrLayer );
+            _tmpStack.push( _tmpNodeP );
+
+            std::cout << "node " << _tmpNodeP->GetCompareValue() << " ";
+            while( !_tmpStack.empty() )
+            {
+                if( _tmpNodeP->mLeftChildObjP == nullptr )
+                {
+                    _tmpNodeP = _tmpStack.top();
+                    _tmpStack.pop();
+                    _tmpCurrLayer = _tmpNodeP->fun_GetLayer();
+
+                    _tmpNodeP = _tmpNodeP->mRightChildObjP;
+                    while( ( _tmpNodeP == nullptr ) && ( !_tmpStack.empty() ) )
+                    {
+                        _tmpNodeP = _tmpStack.top();
+                        _tmpStack.pop();
+                        _tmpCurrLayer = _tmpNodeP->fun_GetLayer();
+
+                        _tmpNodeP = _tmpNodeP->mRightChildObjP;
+                    }
+                }
+                else
+                {
+                    _tmpNodeP = _tmpNodeP->mLeftChildObjP;
+                }
+
+                if( _tmpNodeP != nullptr )
+                {
+                    _tmpCurrLayer += 1;
+                    _tmpNodeP->sub_SetLayer( _tmpCurrLayer );
+                    if( _tmpCurrLayer > _tmpMaxLayer )
+                    {
+                        _tmpMaxLayer = _tmpCurrLayer;
+                    }
+                    _tmpStack.push( _tmpNodeP );
+                    std::cout << "node " << _tmpNodeP->GetCompareValue() << " ";
+                }
+            }
+        }
+        std::cout << std::endl;
+        return _retValue;
     }
 
 private:

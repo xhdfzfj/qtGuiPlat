@@ -14,6 +14,7 @@ public:
         mParentObjP = nullptr;
         mRightChildObjP = nullptr;
         mLeftChildObjP = nullptr;
+        mLayer = 0;
     }
 
     virtual ~TreeNodeClass()
@@ -22,6 +23,24 @@ public:
         {
             //delete mContentValue;
         }
+    }
+
+    /**
+     * @brief sub_SetLayer
+     * @param pLayer
+     */
+    void sub_SetLayer( int pLayer )
+    {
+        mLayer = pLayer;
+    }
+
+    /**
+     * @brief fun_GetLayer
+     * @return
+     */
+    int fun_GetLayer()
+    {
+        return mLayer;
     }
 
 public:
@@ -37,6 +56,7 @@ private:
     compareT mCompareValue;
     contentT mContentValue;
     bool mFreeContentFlag;
+    int mLayer;
 };
 
 #endif // TREENODECLASS_H

@@ -79,6 +79,8 @@ void GuiDrawControl::sub_SizeChanage()
  * @brief GuiDrawControl::sub_CreateBinaryTree
  * @param pHeight
  */
+//int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
+int _tmpBinTreeNode[] = { 50, 60, 70, 80, 90, 65 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -92,33 +94,37 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int i, j;
     int _tmpLen;
 
-    _tmpLen = pow( 2, pHeight ) - 1;
-    //QRandomGenerator::global()->generate()
-    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
-    for( i = 0; i < _tmpLen; i++ )
-    {
-        _tmpNumberS.append(qrand() % 10000 );
-        bool flag=true;
-        while(flag)
-        {
-            for(j=0;j<i;j++)
-            {
-                if(_tmpNumberS[i]==_tmpNumberS[j])
-                {
-                    break;
-                }
-            }
-            if(j<i)
-            {
-                _tmpNumberS[i]=rand() % 10000;
-            }
-            if(j==i)
-            {
-                flag=!flag;
-            }
-        }
-    }
+//    _tmpLen = pow( 2, pHeight ) - 1;
+//    //QRandomGenerator::global()->generate()
+//    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
+//    for( i = 0; i < _tmpLen; i++ )
+//    {
+//        _tmpNumberS.append(qrand() % 10000 );
+//        bool flag=true;
+//        while(flag)
+//        {
+//            for(j=0;j<i;j++)
+//            {
+//                if(_tmpNumberS[i]==_tmpNumberS[j])
+//                {
+//                    break;
+//                }
+//            }
+//            if(j<i)
+//            {
+//                _tmpNumberS[i]=rand() % 10000;
+//            }
+//            if(j==i)
+//            {
+//                flag=!flag;
+//            }
+//        }
+//    }
 
+    for( i = 0; i < 6; i++ )
+    {
+        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+    }
     mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
 
     sub_DrawBinaryTree();
