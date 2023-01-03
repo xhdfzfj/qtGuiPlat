@@ -36,6 +36,8 @@ public:
 
     void sub_ClearObject();
 
+    void sub_DrawBinaryTree();
+
     /*********************************
      * 系统重载
      * ******************************/

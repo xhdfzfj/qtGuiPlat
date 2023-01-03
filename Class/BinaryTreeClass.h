@@ -92,6 +92,16 @@ public:
         }
     }
 
+    /**
+     * @brief fun_GetTreeHeight
+     * @return
+     *      返回树的高度
+     */
+    int fun_GetTreeHeight()
+    {
+
+    }
+
 private:
     TreeNodeClass< compareT, contentT > * mRootObjP;
 };

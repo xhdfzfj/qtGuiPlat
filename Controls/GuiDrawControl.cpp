@@ -120,6 +120,8 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     }
 
     mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
+
+    sub_DrawBinaryTree();
 }
 
 /**
@@ -389,6 +391,16 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
             pPainter->drawText( _tmpPoint, _tmpDisplayObjP->GetDiplayString() );
         }
     }
+}
+
+/**
+ * @brief GuiDrawControl::sub_DrawBinaryTree
+ */
+void GuiDrawControl::sub_DrawBinaryTree()
+{
+    int _tmpHeight;
+
+    _tmpHeight = mBinTreeObjP->fun_GetTreeHeight();
 }
 
 
