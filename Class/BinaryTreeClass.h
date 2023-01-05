@@ -153,8 +153,11 @@ public:
                     std::cout << "node " << _tmpNodeP->GetCompareValue() << " ";
                 }
             }
+
+            _retValue = _tmpMaxLayer;
         }
         std::cout << std::endl;
+
         return _retValue;
     }
 

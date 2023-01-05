@@ -33,6 +33,7 @@ public:
     void sub_ReadySetHexDataDiaplay( void );
     void sub_CreateDisplayHexData( uint8_t * pDataP, int pNeedLen, int pLen );
     void sub_RefreshDisplayElement( void );
+    void sub_CreateBTreeDrawElement( int pTreeHeight );
 
     void sub_ClearObject();
 

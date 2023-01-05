@@ -15,6 +15,8 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
     mActivedFlag = false;
     mDataSourceP = nullptr;
     mBinTreeObjP = nullptr;
+
+    mFont = QFont( "SimSun", 16 );
 }
 
 /**
@@ -203,7 +205,7 @@ void GuiDrawControl::sub_DisplayFile( QUrl pPath )
  */
 void GuiDrawControl::sub_ReadySetHexDataDiaplay( void )
 {
-    QFont _tmpFont( "SimSun", 16 );
+    QFont _tmpFont = mFont;
     QFontMetrics _tmpFm( _tmpFont );
 
     QString _tmpTestString = "FF";
@@ -400,6 +402,29 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
 }
 
 /**
+ * @brief GuiDrawControl::sub_CreateBTreeDrawElement
+ * @param pTreeHeight
+ */
+void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
+{
+    int _width;
+    int _height;
+    QFont _tmpFont = mFont;
+    QFontMetrics _tmpFm( _tmpFont );
+
+    QString _tmpTestString = "FFFFFFFF";
+
+    _width = _tmpFm.width( _tmpTestString );
+    _height = _tmpFm.height();
+
+    DisplayElementClass * _tmpDisplayObjP;
+
+    mDisplayElementS.clear();
+
+
+}
+
+/**
  * @brief GuiDrawControl::sub_DrawBinaryTree
  */
 void GuiDrawControl::sub_DrawBinaryTree()
@@ -407,6 +432,10 @@ void GuiDrawControl::sub_DrawBinaryTree()
     int _tmpHeight;
 
     _tmpHeight = mBinTreeObjP->fun_GetTreeHeight();
+
+    qDebug() << "tree height " << _tmpHeight;
+
+    sub_CreateBTreeDrawElement( _tmpHeight );
 }
 
 
