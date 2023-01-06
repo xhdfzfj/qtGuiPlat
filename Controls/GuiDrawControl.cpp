@@ -3,6 +3,7 @@
 #include <QBrush>
 #include <QQmlProperties>
 #include <QTime>
+#include <QSize>
 #include <QRandomGenerator>
 #include "GuiDrawControl.h"
 
@@ -373,33 +374,6 @@ void GuiDrawControl::sub_RefreshDisplayElement( void )
     update();
 }
 
-/**
- * @brief GuiDrawControl::sub_DrawDisplayElementS
- * @param pPainter
- */
-void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
-{
-    QPen _tmpPend;
-    QColor _tmpColor;
-    QPoint _tmpPoint;
-
-    pPainter->setFont( mFont );
-
-    foreach ( DisplayElementClass * _tmpDisplayObjP, mDisplayElementS )
-    {
-        _tmpColor = _tmpDisplayObjP->GetFrontColor();
-
-        _tmpPend.setColor( _tmpColor );
-        _tmpPoint = _tmpDisplayObjP->GetPoint();
-
-        pPainter->setPen( _tmpPend );
-
-        if( _tmpDisplayObjP->GetDisplayType() == DiplayHexDataType )
-        {
-            pPainter->drawText( _tmpPoint, _tmpDisplayObjP->GetDiplayString() );
-        }
-    }
-}
 
 /**
  * @brief GuiDrawControl::sub_CreateBTreeDrawElement
@@ -421,7 +395,12 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
 
     mDisplayElementS.clear();
 
+    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 500, 300, 200, 100, QString( "12345678" ) );
+    _tmpDisplayObjP->SetFront( Qt::blue );
 
+    mDisplayElementS.push_back( _tmpDisplayObjP );
+
+    update();
 }
 
 /**
@@ -438,6 +417,42 @@ void GuiDrawControl::sub_DrawBinaryTree()
     sub_CreateBTreeDrawElement( _tmpHeight );
 }
 
+/**
+ * @brief GuiDrawControl::sub_DrawDisplayElementS
+ * @param pPainter
+ */
+void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
+{
+    QPen _tmpPend;
+    QColor _tmpColor;
+    QPoint _tmpPoint;
+    QSize _tmpSize;
+
+    pPainter->setFont( mFont );
+
+    foreach ( DisplayElementClass * _tmpDisplayObjP, mDisplayElementS )
+    {
+        _tmpColor = _tmpDisplayObjP->GetFrontColor();
+
+        _tmpPend.setColor( _tmpColor );
+        _tmpPoint = _tmpDisplayObjP->GetPoint();
+
+        pPainter->setPen( _tmpPend );
+
+        if( _tmpDisplayObjP->GetDisplayType() == DiplayHexDataType )
+        {
+            pPainter->drawText( _tmpPoint, _tmpDisplayObjP->GetDiplayString() );
+        }
+        else if( _tmpDisplayObjP->GetDisplayType() == EllipipseTextType )
+        {
+            //椭圆与文本
+            _tmpPoint = _tmpDisplayObjP->GetPoint();
+            _tmpSize = _tmpDisplayObjP->GetSize();
+
+            pPainter->drawEllipse( _tmpPoint.x(), _tmpPoint.y(), _tmpSize.width(), _tmpSize.height() );
+        }
+    }
+}
 
 /**
  * @brief GuiDrawControl::paint
