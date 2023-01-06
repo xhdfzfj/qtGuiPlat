@@ -10,6 +10,7 @@ typedef enum __DisplayType_e
 {
     DiplayHexDataType,
     EllipipseTextType,  //椭圆加文本
+    LineType,           //线
 }DisplayType_e;
 
 class DisplayElementClass
@@ -17,6 +18,7 @@ class DisplayElementClass
 public:
     DisplayElementClass( DisplayType_e pType, int X, int Y, QString pQStr );
     DisplayElementClass( DisplayType_e pType, int X, int Y, int pWidth, int pHeight, QString pQStr );
+    DisplayElementClass( DisplayType_e pType, int X, int Y, int X1, int Y1 );
     ~DisplayElementClass();
 
     void SetFront( QColor pColor )  { mFrontColor = pColor; }

@@ -386,7 +386,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     QFont _tmpFont = mFont;
     QFontMetrics _tmpFm( _tmpFont );
 
-    QString _tmpTestString = "FFFFFFFF";
+    QString _tmpTestString = "12345";
 
     _width = _tmpFm.width( _tmpTestString );
     _height = _tmpFm.height();
@@ -395,9 +395,19 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
 
     mDisplayElementS.clear();
 
-    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 500, 300, 200, 100, QString( "12345678" ) );
+    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 5, 5, _width + 20, _height + 20, _tmpTestString );
     _tmpDisplayObjP->SetFront( Qt::blue );
+    mDisplayElementS.push_back( _tmpDisplayObjP );
 
+    _tmpTestString = "8765432187654321";
+    _width = _tmpFm.width( _tmpTestString );
+    _height = _tmpFm.height();
+    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 150, 150, _width + 20, _height + 20, _tmpTestString );
+    _tmpDisplayObjP->SetFront( Qt::red );
+    mDisplayElementS.push_back( _tmpDisplayObjP );
+
+    _tmpDisplayObjP = new DisplayElementClass( LineType, 5 + ( _width + 20 ) / 2,  5 + _height + 20, 150 + ( _width + 20 ) / 2, 150 );
+    _tmpDisplayObjP->SetFront( Qt::yellow );
     mDisplayElementS.push_back( _tmpDisplayObjP );
 
     update();
@@ -450,6 +460,14 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
             _tmpSize = _tmpDisplayObjP->GetSize();
 
             pPainter->drawEllipse( _tmpPoint.x(), _tmpPoint.y(), _tmpSize.width(), _tmpSize.height() );
+            pPainter->drawText( _tmpPoint.x() + 10, _tmpPoint.y() + _tmpSize.height() - 15, _tmpDisplayObjP->GetDiplayString() );
+        }
+        else if( _tmpDisplayObjP->GetDisplayType() == LineType )
+        {
+            _tmpPoint = _tmpDisplayObjP->GetPoint();
+            _tmpSize = _tmpDisplayObjP->GetSize();
+
+            pPainter->drawLine( _tmpPoint.x(), _tmpPoint.y(), _tmpSize.width(), _tmpSize.height() );
         }
     }
 }
@@ -464,6 +482,8 @@ void GuiDrawControl::paint( QPainter * pPainter )
     //paint( pPainter );  //调用基类的重绘函数
 
     //sub_DrawBackground( pPainter );
+
+    pPainter->setRenderHint( QPainter::Antialiasing );
 
     if( !mDisplayElementS.empty() )
     {

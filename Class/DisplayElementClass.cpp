@@ -16,7 +16,6 @@ DisplayElementClass::DisplayElementClass(DisplayType_e pType, int X, int Y, QStr
 }
 
 DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int pWidth, int pHeight, QString pQStr )
-
 {
     mType = pType;
     mX = X;
@@ -25,6 +24,15 @@ DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int
 
     mWidth = pWidth;
     mHeight = pHeight;
+}
+
+DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int X1, int Y1 )
+{
+    mType = pType;
+    mX = X;
+    mY = Y;
+    mWidth = X1;
+    mHeight = Y1;
 }
 
 /**
