@@ -9,6 +9,7 @@
 #include "../Class/DisplayElementClass.h"
 #include "../Class/DataSourceClass.h"
 #include "../Class/BinaryTreeClass.h"
+#include "../Class/TreeNodeClass.h"
 
 #define X_SPACE  5
 #define Y_SPACE  5
@@ -71,6 +72,7 @@ private:
     QObject * mScrollBarObjP;
 
     BinaryTreeClass< int, int > * mBinTreeObjP;
+
 };
 
 #endif // GUIDRAWCONTROL_H

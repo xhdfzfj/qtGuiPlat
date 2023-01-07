@@ -47,6 +47,37 @@ public:
     bool GetFreeFlag() { return mFreeContentFlag; }
     compareT GetCompareValue() { return mCompareValue; }
 
+    /**
+     * @brief GetParent
+     * @return
+     */
+    TreeNodeClass< compareT, contentT > * GetParent()
+    {
+        TreeNodeClass< compareT, contentT > * _retP;
+
+        _retP = mParentObjP;
+
+        return _retP;
+    }
+
+    int JudgeLeftOrRight( TreeNodeClass< compareT, contentT > * pChildP )
+    {
+        int _retValue;
+
+        _retValue = 0;
+
+        if( mLeftChildObjP == pChildP )
+        {
+            _retValue = 1;
+        }
+        else if( mRightChildObjP == pChildP )
+        {
+            _retValue = 2;
+        }
+
+        return _retValue;
+    }
+
 public:
     class TreeNodeClass * mParentObjP;
     class TreeNodeClass * mRightChildObjP;

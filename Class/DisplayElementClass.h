@@ -40,6 +40,10 @@ private:
     QString mDisplayStr;
 
     QColor mFrontColor;
+
+public:
+    static const int EllipipeWidthSpace = 20;
+    static const int EllipipeHeightSpace = 20;
 };
 
 #endif // DISPLAYELEMENTCLASS_H

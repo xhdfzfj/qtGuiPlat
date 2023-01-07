@@ -16,7 +16,10 @@ public:
     }
     ~BinaryTreeClass()
     {
-
+        if( !mLayerElementS.empty() )
+        {
+            mLayerElementS.clear();
+        }
     }
 
     /**
@@ -161,8 +164,98 @@ public:
         return _retValue;
     }
 
+    /**
+     * @brief sub_ReadyTransferLayer
+     * 准务进行层的遍历
+     * @param pLayer
+     * 目标层数
+     */
+    void sub_ReadyTransferLayer( int pLayer )
+    {
+        int _tmpCurrLayer;
+
+        if( !mLayerElementS.empty() )
+        {
+            mLayerElementS.clear();
+        }
+
+        if( mRootObjP == nullptr )
+        {
+            return;
+        }
+
+        if( pLayer == 1 )
+        {
+            mLayerElementS.push_back( mRootObjP );
+            return;
+        }
+
+        std::list< TreeNodeClass< compareT, contentT > * > _tmpList;
+        std::list< TreeNodeClass< compareT, contentT > * > _tmpSaveList;
+        TreeNodeClass< compareT, contentT > * _tmpNodeP;
+        TreeNodeClass< compareT, contentT > * nodeP;
+
+        _tmpNodeP = mRootObjP->mLeftChildObjP;
+        if( _tmpNodeP != nullptr )
+        {
+            _tmpList.push_back( _tmpNodeP );
+        }
+        _tmpNodeP = mRootObjP->mRightChildObjP;
+        if( _tmpNodeP != nullptr )
+        {
+            _tmpList.push_back( _tmpNodeP );
+        }
+
+        _tmpCurrLayer = 2;
+
+        while( !_tmpList.empty() )
+        {
+            if( _tmpCurrLayer == pLayer )
+            {
+                mLayerElementS = std::list< TreeNodeClass< compareT, contentT > * >( _tmpList.begin(), _tmpList.end() );
+                break;
+            }
+            else
+            {
+                _tmpCurrLayer += 1;
+                _tmpSaveList.clear();
+                std::list< TreeNodeClass< compareT, contentT > * >::iterator _tmpIte;
+                _tmpIte = _tmpList.begin();
+                for( ; _tmpIte != _tmpList.end(); ++_tmpIte )
+                {
+                    nodeP = *_tmpIte;
+                    _tmpNodeP = nodeP->mLeftChildObjP;
+                    if( _tmpNodeP != nullptr )
+                    {
+                        _tmpSaveList.push_back( _tmpNodeP );
+                    }
+                    _tmpNodeP = nodeP->mRightChildObjP;
+                    if( _tmpNodeP != nullptr )
+                    {
+                        _tmpSaveList.push_back( _tmpNodeP );
+                    }
+                }
+                _tmpList.clear();
+                if( !_tmpSaveList.empty() )
+                {
+                    _tmpList = std::list< TreeNodeClass< compareT, contentT > * >( _tmpSaveList.begin(), _tmpSaveList.end() );
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief fun_GetLayerElementS
+     * @return
+     */
+    std::list< TreeNodeClass< compareT, contentT > * > fun_GetLayerElementS()
+    {
+       return  mLayerElementS;
+    }
+
 private:
     TreeNodeClass< compareT, contentT > * mRootObjP;
+    std::list< TreeNodeClass< compareT, contentT > * > mLayerElementS;
 };
 
 #endif // BINARYTREECLASS_H
