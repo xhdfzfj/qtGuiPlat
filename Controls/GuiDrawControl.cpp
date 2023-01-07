@@ -386,7 +386,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     QFont _tmpFont = mFont;
     QFontMetrics _tmpFm( _tmpFont );
 
-    QString _tmpTestString = "12345";
+    QString _tmpTestString = "FFFFFFFF";
 
     _width = _tmpFm.width( _tmpTestString );
     _height = _tmpFm.height();
@@ -394,6 +394,10 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     DisplayElementClass * _tmpDisplayObjP;
 
     mDisplayElementS.clear();
+
+
+
+
 
     _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 5, 5, _width + 20, _height + 20, _tmpTestString );
     _tmpDisplayObjP->SetFront( Qt::blue );
