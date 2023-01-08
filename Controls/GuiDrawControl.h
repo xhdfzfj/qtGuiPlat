@@ -4,6 +4,7 @@
 #include <QQuickItem>
 #include <QPainter>
 #include <list>
+#include <map>
 #include <QtQuick/QQuickPaintedItem>
 #include "../Class/ClearObjectInterface.h"
 #include "../Class/DisplayElementClass.h"
@@ -36,9 +37,13 @@ public:
     void sub_RefreshDisplayElement( void );
     void sub_CreateBTreeDrawElement( int pTreeHeight );
 
-    void sub_ClearObject();
+    void sub_ClearObject() override;
 
     void sub_DrawBinaryTree();
+
+    int fun_BTreeXcoorndinate( std::map< int64_t, DisplayElementClass * > pParentS,
+                               TreeNodeClass< int, int > * pDestNodeP,
+                               DisplayElementClass * & pRetParentDispObjP );
 
     /*********************************
      * 系统重载

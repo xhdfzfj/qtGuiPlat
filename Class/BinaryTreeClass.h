@@ -219,7 +219,7 @@ public:
             {
                 _tmpCurrLayer += 1;
                 _tmpSaveList.clear();
-                std::list< TreeNodeClass< compareT, contentT > * >::iterator _tmpIte;
+                typename std::list< TreeNodeClass< compareT, contentT > * >::iterator _tmpIte;
                 _tmpIte = _tmpList.begin();
                 for( ; _tmpIte != _tmpList.end(); ++_tmpIte )
                 {

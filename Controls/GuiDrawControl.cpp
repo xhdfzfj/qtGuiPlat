@@ -6,7 +6,7 @@
 #include <QSize>
 #include <QRandomGenerator>
 #include "GuiDrawControl.h"
-#include <map>
+
 
 /**
  * @brief GuiDrawControl::GuiDrawControl
@@ -48,6 +48,8 @@ void GuiDrawControl::sub_ClearObject()
 
         delete _tmpObjP;
     }
+
+
 }
 
 /**
@@ -76,6 +78,11 @@ void GuiDrawControl::sub_SizeChanage()
                 update();
             }
         }
+        else
+        {
+            //绘制二叉树
+            sub_RefreshDisplayElement();
+        }
     }
 }
 
@@ -84,7 +91,7 @@ void GuiDrawControl::sub_SizeChanage()
  * @param pHeight
  */
 //int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
-int _tmpBinTreeNode[] = { 50, 45, 30, 46, 60, 70, 80, 90, 65 };
+int _tmpBinTreeNode[] = { 50, 45, 30, 46, 60, 70, 80, 90, 65, 20, 35, 33, 40, 75, 15, 25 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -125,7 +132,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 //        }
 //    }
 
-    for( i = 0; i < 9; i++ )
+    for( i = 0; i < 16; i++ )
     {
         _tmpNumberS.append( _tmpBinTreeNode[ i ] );
     }
@@ -346,6 +353,11 @@ void GuiDrawControl::sub_ScrollBarChanage( qreal pPosition )
             }
         }
     }
+    else
+    {
+        //绘制二叉树
+        sub_RefreshDisplayElement();
+    }
 }
 
 /**
@@ -371,8 +383,50 @@ void GuiDrawControl::sub_RefreshDisplayElement( void )
             delete [] _tmpCurrentPageBufP;
         }
     }
+    else
+    {
+        //绘制二㕚树
+        sub_DrawBinaryTree();
+    }
 
     update();
+}
+
+/**
+ * @brief GuiDrawControl::fun_BTreeXcoorndinate
+ * @param pParentS
+ * @param pDestNodeP
+ * @return
+ */
+int GuiDrawControl::fun_BTreeXcoorndinate( std::map< int64_t, DisplayElementClass * > pParentS,
+                                           TreeNodeClass< int, int > * pDestNodeP,
+                                           DisplayElementClass * & pRetParentDispObjP )
+{
+    int64_t _tmpIndex;
+    int z, _retValue;
+    std::map< int64_t, DisplayElementClass * >::iterator _tmpParentItm;
+    DisplayElementClass * _tmpParentDisplayObjP;
+    int _startX, _endX;
+
+    _retValue = 0;
+    _tmpIndex = ( int64_t )pDestNodeP->GetParent();
+    _tmpParentItm = pParentS.find( _tmpIndex );
+    if( _tmpParentItm != pParentS.end() )
+    {
+        _tmpParentDisplayObjP = _tmpParentItm->second;
+        pRetParentDispObjP = _tmpParentDisplayObjP;
+        z = pDestNodeP->GetParent()->JudgeLeftOrRight( pDestNodeP );  //0 不是子节点 1为左子 2为右子
+        if( z == 1 )
+        {
+            _retValue = _tmpParentDisplayObjP->GetPoint().x() - ( _tmpParentDisplayObjP->GetStartDistance() / 2 );
+        }
+        else if( z == 2 )
+        {
+            _retValue = _tmpParentDisplayObjP->GetPoint().x() + ( _tmpParentDisplayObjP->GetEndDistance() / 2 );
+        }
+    }
+
+    return _retValue;
 }
 
 
@@ -392,16 +446,17 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     QString _tmpTestString = "FFFFFFFF";
     int _AllHeight, _AllWidth;
     int i, j, z;
-    int64_t _tmpIndex;
     int _x, _y;
+    int _x0, _y0;
+    int _x1, _y1;
 
-    _width = _tmpFm.width( _tmpTestString );
+    _width = _tmpFm.horizontalAdvance( _tmpTestString );
     _height = _tmpFm.height();
 
     mDisplayElementS.clear();
 
-    _AllHeight = ( pTreeHeight * 2 - 1 ) * _height;
-    _AllWidth = ( pow( 2, ( pTreeHeight - 1 ) ) - 1 ) * _width;
+    _AllHeight = ( pTreeHeight * 2 - 1 ) * ( _height + DisplayElementClass::EllipipeHeightSpace );
+    _AllWidth =  2 * ( pow( 2, ( pTreeHeight - 1 ) ) ) * _width - _width;       //他每个元素之间都空一个宽度
 
     if( _AllWidth <= width() )
     {
@@ -414,7 +469,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     std::map< int64_t, DisplayElementClass * >::iterator _tmpParentItm;
 
     _y = Y_SPACE;
-    for( i = 1; i <= 2; i++ )
+    for( i = 1; i <= pTreeHeight; i++ )
     {
         _x = _AllWidth / pow( 2, i );
 
@@ -429,48 +484,61 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
                 _tmpNodeP = *_tmpIte;
                 qDebug() << "node value:" << _tmpNodeP->GetCompareValue();
 
+                _tmpParentDisplayObjP = nullptr;
                 if( !_tmpParentS.empty() )
                 {
-                    _tmpIndex = ( int64_t )_tmpNodeP->GetParent();
-                    _tmpParentItm = _tmpParentS.find( _tmpIndex );
-                    if( _tmpParentItm != _tmpParentS.end() )
-                    {
-                        _tmpParentDisplayObjP = _tmpParentItm->second;
-                        z = _tmpNodeP->GetParent()->JudgeLeftOrRight( _tmpNodeP );  //0 不是子节点 1为左子 2为右子
-                    }
+                    _x = fun_BTreeXcoorndinate( _tmpParentS, _tmpNodeP, _tmpParentDisplayObjP );
                 }
 
                 _tmpTestString = QString::number( _tmpNodeP->GetCompareValue() );
-                _width = _tmpFm.width( _tmpTestString );
+                _width = _tmpFm.horizontalAdvance( _tmpTestString );
                 _height = _tmpFm.height();
 
                 _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, _x - ( _width / 2 ), _y,
                                                            _width + DisplayElementClass::EllipipeWidthSpace,
                                                            _height + DisplayElementClass::EllipipeHeightSpace, _tmpTestString );
-                _tmpDisplayObjP->SetFront( Qt::blue );
+                if( _tmpParentDisplayObjP == nullptr )
+                {
+                    j = _x - ( _width / 2 ) - X_SPACE;
+                    z = _AllWidth - X_SPACE - ( _x - ( _width / 2 ) );
+                }
+                else
+                {
+                    j = _x - ( _width / 2 );
+                    if( j < _tmpParentDisplayObjP->GetPoint().x() )
+                    {
+                        z = _tmpParentDisplayObjP->GetPoint().x() - j;
+                        j = _tmpParentDisplayObjP->GetStartDistance() / 2;
+                    }
+                    else
+                    {
+                        j = j - _tmpParentDisplayObjP->GetPoint().x();
+                        z = _tmpParentDisplayObjP->GetEndDistance() / 2;
+                    }
+                }
+                _tmpDisplayObjP->SetDistance( j, z );
+                _tmpDisplayObjP->SetFront( Qt::yellow );
                 _tmpParentS[ ( int64_t )_tmpNodeP ] = _tmpDisplayObjP;
                 mDisplayElementS.push_back( _tmpDisplayObjP );
-                _x += _x;
+
+                //联线的绘图对象
+                if( _tmpParentDisplayObjP != nullptr )
+                {
+                    _x0 = _tmpParentDisplayObjP->GetPoint().x() + _tmpParentDisplayObjP->GetSize().width() / 2;
+                    _y0 = _tmpParentDisplayObjP->GetPoint().y() + _tmpParentDisplayObjP->GetSize().height();
+
+                    _x1 = _tmpDisplayObjP->GetPoint().x() + _tmpDisplayObjP->GetSize().width() / 2;
+                    _y1 = _tmpDisplayObjP->GetPoint().y();
+                    _tmpDisplayObjP = new DisplayElementClass( LineType, _x0, _y0, _x1, _y1 );
+                    mDisplayElementS.push_back( _tmpDisplayObjP );
+                    _tmpDisplayObjP->SetFront( Qt::green );
+                }
+
             }
 
-            _y += _height + DisplayElementClass::EllipipeHeightSpace;
+            _y += 2 * ( _height + DisplayElementClass::EllipipeHeightSpace ) + DisplayElementClass::EllipipeHeightSpace;
         }
     }
-
-//    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 5, 5, _width + 20, _height + 20, _tmpTestString );
-//    _tmpDisplayObjP->SetFront( Qt::blue );
-//    mDisplayElementS.push_back( _tmpDisplayObjP );
-
-//    _tmpTestString = "8765432187654321";
-//    _width = _tmpFm.width( _tmpTestString );
-//    _height = _tmpFm.height();
-//    _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, 150, 150, _width + 20, _height + 20, _tmpTestString );
-//    _tmpDisplayObjP->SetFront( Qt::red );
-//    mDisplayElementS.push_back( _tmpDisplayObjP );
-
-//    _tmpDisplayObjP = new DisplayElementClass( LineType, 5 + ( _width + 20 ) / 2,  5 + _height + 20, 150 + ( _width + 20 ) / 2, 150 );
-//    _tmpDisplayObjP->SetFront( Qt::yellow );
-//    mDisplayElementS.push_back( _tmpDisplayObjP );
 
     update();
 }

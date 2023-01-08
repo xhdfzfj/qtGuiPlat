@@ -28,6 +28,10 @@ public:
     DisplayType_e GetDisplayType() { return mType; }
     QSize GetSize() { return QSize( mWidth, mHeight ); }
 
+    void SetDistance( int pStartDistance, int pEndDistance )    { mStartDistance = pStartDistance; mEndDistance = pEndDistance; }
+    int GetStartDistance() { return mStartDistance; }
+    int GetEndDistance() { return mEndDistance; }
+
 private:
     DisplayType_e mType;
 
@@ -36,6 +40,9 @@ private:
 
     int mWidth;
     int mHeight;
+
+    int mStartDistance; //到开始处的距离
+    int mEndDistance;   //到结束处的距离
 
     QString mDisplayStr;
 
