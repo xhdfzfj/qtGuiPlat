@@ -17,6 +17,7 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
     mActivedFlag = false;
     mDataSourceP = nullptr;
     mBinTreeObjP = nullptr;
+    mPainterImageP = nullptr;
 
     mFont = QFont( "SimSun", 16 );
 }
@@ -31,6 +32,11 @@ GuiDrawControl::~GuiDrawControl()
     if( mDataSourceP != nullptr )
     {
         delete mDataSourceP;
+    }
+
+    if( mPainterImageP != nullptr )
+    {
+        delete mPainterImageP;
     }
 }
 
@@ -540,6 +546,8 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
         }
     }
 
+    sub_DrawToImage( _AllWidth, _AllHeight );
+
     update();
 }
 
@@ -600,6 +608,16 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
             pPainter->drawLine( _tmpPoint.x(), _tmpPoint.y(), _tmpSize.width(), _tmpSize.height() );
         }
     }
+}
+
+/**
+ * @brief GuiDrawControl::sub_DrawToImage
+ * @param pWidth
+ * @param pHeight
+ */
+void GuiDrawControl::sub_DrawToImage( int pWidth, int pHeight )
+{
+
 }
 
 /**

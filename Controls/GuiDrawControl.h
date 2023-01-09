@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <list>
 #include <map>
+#include <QImage>
 #include <QtQuick/QQuickPaintedItem>
 #include "../Class/ClearObjectInterface.h"
 #include "../Class/DisplayElementClass.h"
@@ -44,6 +45,7 @@ public:
     int fun_BTreeXcoorndinate( std::map< int64_t, DisplayElementClass * > pParentS,
                                TreeNodeClass< int, int > * pDestNodeP,
                                DisplayElementClass * & pRetParentDispObjP );
+    void sub_DrawToImage( int pWidth, int pHeight );
 
     /*********************************
      * 系统重载
@@ -77,6 +79,8 @@ private:
     QObject * mScrollBarObjP;
 
     BinaryTreeClass< int, int > * mBinTreeObjP;
+
+    QImage * mPainterImageP;
 
 };
 
