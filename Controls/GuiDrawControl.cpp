@@ -19,6 +19,9 @@ GuiDrawControl::GuiDrawControl(QQuickItem * pParent) : QQuickPaintedItem( pParen
     mBinTreeObjP = nullptr;
     mPainterImageP = nullptr;
 
+    mDisplayX = 0;
+    mDisplayY = 0;
+
     mFont = QFont( "SimSun", 16 );
 }
 
@@ -37,6 +40,11 @@ GuiDrawControl::~GuiDrawControl()
     if( mPainterImageP != nullptr )
     {
         delete mPainterImageP;
+    }
+
+    if( mBinTreeObjP != nullptr )
+    {
+        delete mBinTreeObjP;
     }
 }
 
@@ -169,6 +177,33 @@ void GuiDrawControl::sub_DrawBackground( QPainter * pPainter )
 //        pPainter->drawRect( _tmpRect );
 
         pPainter->setBackground( _tmpBrush );
+    }
+}
+
+/**
+ * @brief GuiDrawControl::sub_DrawBackground
+ * @param pPainterP
+ * @param pSize
+ */
+void GuiDrawControl::sub_DrawBackground( QPainter *pPainterP, QSize pSize )
+{
+    int _tmpWidth, _tmpHeight;
+
+    _tmpWidth = pSize.width();
+    _tmpHeight = pSize.height();
+
+    if( ( _tmpWidth != 0 ) && ( _tmpHeight != 0 ) )
+    {
+        QRect _tmpRect;
+        QBrush _tmpBrush;
+
+        _tmpRect = QRect(0, 0, _tmpWidth, _tmpHeight );
+
+        _tmpBrush = QBrush( mBackgroundColor );
+
+        pPainterP->setBrush( _tmpBrush );
+        pPainterP->drawRect( _tmpRect );
+
     }
 }
 
@@ -337,32 +372,62 @@ void GuiDrawControl::sub_ScrollBarChanage( qreal pPosition )
     int _tmpLine;
     int _tmpPos;
 
-    if( mDataSourceP != nullptr )
+    if( mPainterImageP != nullptr )
     {
-        if( mDataSourceP->GetDataSourceType() == FileDataType )
-        {
-            if( mHexDataLineS < mAllLineS )
-            {
-                //一页显示不完
-                _tmpLine = pPosition * mAllLineS;
-                _tmpLine -= ( mHexDataLineS / 2 );
-                if( _tmpLine < 0 )
-                {
-                    _tmpLine = 0;
-                }
-                _tmpPos = ( _tmpLine * mHexDataLineByteS );
 
-                qDebug() << "new pos " << _tmpPos;
-
-                mDataSourceP->sub_SetDataOffset( _tmpPos );
-                sub_RefreshDisplayElement();
-            }
-        }
     }
     else
     {
-        //绘制二叉树
-        sub_RefreshDisplayElement();
+        if( mDataSourceP != nullptr )
+        {
+            if( mDataSourceP->GetDataSourceType() == FileDataType )
+            {
+                if( mHexDataLineS < mAllLineS )
+                {
+                    //一页显示不完
+                    _tmpLine = pPosition * mAllLineS;
+                    _tmpLine -= ( mHexDataLineS / 2 );
+                    if( _tmpLine < 0 )
+                    {
+                        _tmpLine = 0;
+                    }
+                    _tmpPos = ( _tmpLine * mHexDataLineByteS );
+
+                    qDebug() << "new pos " << _tmpPos;
+
+                    mDataSourceP->sub_SetDataOffset( _tmpPos );
+                    sub_RefreshDisplayElement();
+                }
+            }
+        }
+        else
+        {
+            //绘制二叉树
+            sub_RefreshDisplayElement();
+        }
+    }
+}
+
+/**
+ * @brief GuiDrawControl::sub_HorScrollBarChanage
+ * @param pPosition
+ */
+void GuiDrawControl::sub_HorScrollBarChanage( qreal pPosition )
+{
+    int _changeValue;
+
+    if( mPainterImageP != nullptr )
+    {
+        _changeValue = pPosition * mPainterImageP->width();
+
+        mDisplayX = _changeValue;
+
+        if( ( mDisplayX + width() ) > mPainterImageP->width() )
+        {
+            mDisplayX = mPainterImageP->width() - width();
+        }
+
+        update();
     }
 }
 
@@ -461,7 +526,6 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
 
     mDisplayElementS.clear();
 
-    _AllHeight = ( pTreeHeight * 2 - 1 ) * ( _height + DisplayElementClass::EllipipeHeightSpace );
     _AllWidth =  2 * ( pow( 2, ( pTreeHeight - 1 ) ) ) * _width - _width;       //他每个元素之间都空一个宽度
 
     if( _AllWidth <= width() )
@@ -503,6 +567,9 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
                 _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, _x - ( _width / 2 ), _y,
                                                            _width + DisplayElementClass::EllipipeWidthSpace,
                                                            _height + DisplayElementClass::EllipipeHeightSpace, _tmpTestString );
+
+                _AllHeight = _y + _height + DisplayElementClass::EllipipeHeightSpace + Y_SPACE;
+
                 if( _tmpParentDisplayObjP == nullptr )
                 {
                     j = _x - ( _width / 2 ) - X_SPACE;
@@ -547,6 +614,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     }
 
     sub_DrawToImage( _AllWidth, _AllHeight );
+    //mPainterImageP->save( "1.jpg", "JPG" );
 
     update();
 }
@@ -617,7 +685,31 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
  */
 void GuiDrawControl::sub_DrawToImage( int pWidth, int pHeight )
 {
+    if( mPainterImageP != nullptr )
+    {
+        delete mPainterImageP;
+        mPainterImageP = nullptr;
+    }
 
+    if( pWidth < width() )
+    {
+        pWidth = width();
+    }
+    if( pHeight < height() )
+    {
+        pHeight = height();
+    }
+    mPainterImageP = new QImage( pWidth, pHeight, QImage::Format_ARGB32 );
+    //mPainterImageP->fill( QColor(0,0,0,0) );
+
+    QPainter _tmpPainter( mPainterImageP );
+
+    sub_DrawBackground( &_tmpPainter, QSize( pWidth, pHeight ) );
+
+    if( !mDisplayElementS.empty() )
+    {
+        sub_DrawDisplayElementS( &_tmpPainter );
+    }
 }
 
 /**
@@ -633,8 +725,15 @@ void GuiDrawControl::paint( QPainter * pPainter )
 
     pPainter->setRenderHint( QPainter::Antialiasing );
 
-    if( !mDisplayElementS.empty() )
+    if( mPainterImageP != nullptr )
     {
-        sub_DrawDisplayElementS( pPainter );
+        pPainter->drawImage( 0, 0, *mPainterImageP, mDisplayX, mDisplayY );
+    }
+    else
+    {
+        if( !mDisplayElementS.empty() )
+        {
+            sub_DrawDisplayElementS( pPainter );
+        }
     }
 }

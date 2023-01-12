@@ -14,11 +14,68 @@ public:
     {
         mRootObjP = nullptr;
     }
+
     ~BinaryTreeClass()
     {
         if( !mLayerElementS.empty() )
         {
             mLayerElementS.clear();
+        }
+
+        std::stack< TreeNodeClass< compareT, contentT > * > _tmpStack;
+        TreeNodeClass< compareT, contentT > * _tmpNodeP;
+        TreeNodeClass< compareT, contentT > * _tmpNode1P;
+        void * _tmpDeleteP;
+
+        if( mRootObjP != nullptr )
+        {
+            _tmpNodeP = mRootObjP;
+            _tmpStack.push( _tmpNodeP );
+
+            while( !_tmpStack.empty() )
+            {
+                if( _tmpNodeP->mLeftChildObjP == nullptr )
+                {
+                    _tmpNode1P = _tmpStack.top();
+                    _tmpStack.pop();
+
+                    _tmpNodeP = _tmpNode1P->mRightChildObjP;
+
+                    if( _tmpNode1P->GetFreeFlag() )
+                    {
+                        std::cout << "delete node " << _tmpNodeP->GetCompareValue() << " ";
+
+                        _tmpDeleteP = ( void * )( _tmpNode1P->GetContentValue() );
+                        delete _tmpDeleteP;
+                        delete _tmpNode1P;
+                    }
+
+                    while( ( _tmpNodeP == nullptr ) && ( !_tmpStack.empty() ) )
+                    {
+                        _tmpNode1P = _tmpStack.top();
+                        _tmpStack.pop();
+
+                        if( _tmpNode1P->GetFreeFlag() )
+                        {
+                            std::cout << "delete node " << _tmpNodeP->GetCompareValue() << " ";
+                            _tmpDeleteP = ( void * )( _tmpNode1P->GetContentValue() );
+                            delete _tmpDeleteP;
+                            delete _tmpNode1P;
+                        }
+
+                        _tmpNodeP = _tmpNode1P->mRightChildObjP;
+                    }
+                }
+                else
+                {
+                    _tmpNodeP = _tmpNodeP->mLeftChildObjP;
+                }
+
+                if( _tmpNodeP != nullptr )
+                {
+                    _tmpStack.push( _tmpNodeP );
+                }
+            }
         }
     }
 
@@ -127,14 +184,14 @@ public:
                 {
                     _tmpNodeP = _tmpStack.top();
                     _tmpStack.pop();
-                    _tmpCurrLayer = _tmpNodeP->fun_GetLayer();
+                    _tmpCurrLayer = _tmpNodeP->GetLayer();
 
                     _tmpNodeP = _tmpNodeP->mRightChildObjP;
                     while( ( _tmpNodeP == nullptr ) && ( !_tmpStack.empty() ) )
                     {
                         _tmpNodeP = _tmpStack.top();
                         _tmpStack.pop();
-                        _tmpCurrLayer = _tmpNodeP->fun_GetLayer();
+                        _tmpCurrLayer = _tmpNodeP->GetLayer();
 
                         _tmpNodeP = _tmpNodeP->mRightChildObjP;
                     }

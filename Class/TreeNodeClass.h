@@ -34,18 +34,11 @@ public:
         mLayer = pLayer;
     }
 
-    /**
-     * @brief fun_GetLayer
-     * @return
-     */
-    int fun_GetLayer()
-    {
-        return mLayer;
-    }
-
 public:
     bool GetFreeFlag() { return mFreeContentFlag; }
     compareT GetCompareValue() { return mCompareValue; }
+    contentT GetContentValue() { return mContentValue; }
+    int GetLayer()  { return mLayer; }
 
     /**
      * @brief GetParent

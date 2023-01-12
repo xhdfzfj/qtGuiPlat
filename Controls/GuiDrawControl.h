@@ -27,11 +27,13 @@ public:
     Q_INVOKABLE void sub_SizeChanage();
     Q_INVOKABLE void sub_DisplayFile( QUrl pPath );
     Q_INVOKABLE void sub_ScrollBarChanage( qreal pPosition );
+    Q_INVOKABLE void sub_HorScrollBarChanage( qreal pPosition );
     Q_INVOKABLE void sub_CreateBinaryTree( int pHight );
 
  private:
     void sub_ConnectSignal();
     void sub_DrawBackground( QPainter * pPainter );  //绘制背景
+    void sub_DrawBackground( QPainter * pPainterP, QSize pSize );   //根据大小进行背景的绘制
     void sub_DrawDisplayElementS( QPainter * pPainter );  //绘制内容
     void sub_ReadySetHexDataDiaplay( void );
     void sub_CreateDisplayHexData( uint8_t * pDataP, int pNeedLen, int pLen );
@@ -46,6 +48,7 @@ public:
                                TreeNodeClass< int, int > * pDestNodeP,
                                DisplayElementClass * & pRetParentDispObjP );
     void sub_DrawToImage( int pWidth, int pHeight );
+
 
     /*********************************
      * 系统重载
@@ -71,6 +74,7 @@ private:
     int mAllLineS;
 
     int mCurrX, mCurrY;
+    int mDisplayX, mDisplayY;
 
     DataSourceClass * mDataSourceP;
 
@@ -81,7 +85,6 @@ private:
     BinaryTreeClass< int, int > * mBinTreeObjP;
 
     QImage * mPainterImageP;
-
 };
 
 #endif // GUIDRAWCONTROL_H

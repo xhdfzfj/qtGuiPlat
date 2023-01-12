@@ -116,11 +116,29 @@ Window {
                     anchors.left: guiDrawControl.right
                     opacity: 1
                     visible: true
+                    enabled: true
                     orientation: Qt.Vertical
                     onPositionChanged:
                     {
                         console.log( "scrollbar ", position );
                         guiDrawControl.sub_ScrollBarChanage( position );
+                    }
+                }
+
+                ScrollBar
+                {
+                    id: horizontalScrollBar
+                    width: guiDrawControl.width;
+                    height: 24
+                    anchors.top: guiDrawControl.bottom
+                    opacity: 1
+                    visible: true
+                    enabled: true
+                    orientation: Qt.Horizontal
+                    onPositionChanged:
+                    {
+                        console.log( "scrollbar ", position );
+                        guiDrawControl.sub_HorScrollBarChanage( position );
                     }
                 }
             }
@@ -165,7 +183,7 @@ Window {
         console.log( "Componet.completed ", guiToolBarRect.width, guiToolBarRect.height );
         console.log( "Componet.completed ", guiDrawControl.width, guiDrawControl.height );
         guiDrawControl.width = guiToolBarRect.width - verticalScrollBar.width;
-        guiDrawControl.height = guiMainWindow.height -guiToolBarRect.height;
+        guiDrawControl.height = guiMainWindow.height -guiToolBarRect.height - horizontalScrollBar.height;
 
         guiDrawControl.sub_ComponetLoadend( verticalScrollBar );
     }
