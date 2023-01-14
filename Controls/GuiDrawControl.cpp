@@ -567,6 +567,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
                 _tmpDisplayObjP = new DisplayElementClass( EllipipseTextType, _x - ( _width / 2 ), _y,
                                                            _width + DisplayElementClass::EllipipeWidthSpace,
                                                            _height + DisplayElementClass::EllipipeHeightSpace, _tmpTestString );
+                _tmpDisplayObjP->SetSourceTreeNode( _tmpNodeP );
 
                 _AllHeight = _y + _height + DisplayElementClass::EllipipeHeightSpace + Y_SPACE;
 
@@ -588,24 +589,26 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
                         j = j - _tmpParentDisplayObjP->GetPoint().x();
                         z = _tmpParentDisplayObjP->GetEndDistance() / 2;
                     }
+
+                    _tmpDisplayObjP->SetParentDisplayObj( _tmpParentDisplayObjP );
                 }
                 _tmpDisplayObjP->SetDistance( j, z );
                 _tmpDisplayObjP->SetFront( Qt::yellow );
                 _tmpParentS[ ( int64_t )_tmpNodeP ] = _tmpDisplayObjP;
                 mDisplayElementS.push_back( _tmpDisplayObjP );
 
-                //联线的绘图对象
-                if( _tmpParentDisplayObjP != nullptr )
-                {
-                    _x0 = _tmpParentDisplayObjP->GetPoint().x() + _tmpParentDisplayObjP->GetSize().width() / 2;
-                    _y0 = _tmpParentDisplayObjP->GetPoint().y() + _tmpParentDisplayObjP->GetSize().height();
+//                //联线的绘图对象
+//                if( _tmpParentDisplayObjP != nullptr )
+//                {
+//                    _x0 = _tmpParentDisplayObjP->GetPoint().x() + _tmpParentDisplayObjP->GetSize().width() / 2;
+//                    _y0 = _tmpParentDisplayObjP->GetPoint().y() + _tmpParentDisplayObjP->GetSize().height();
 
-                    _x1 = _tmpDisplayObjP->GetPoint().x() + _tmpDisplayObjP->GetSize().width() / 2;
-                    _y1 = _tmpDisplayObjP->GetPoint().y();
-                    _tmpDisplayObjP = new DisplayElementClass( LineType, _x0, _y0, _x1, _y1 );
-                    mDisplayElementS.push_back( _tmpDisplayObjP );
-                    _tmpDisplayObjP->SetFront( Qt::green );
-                }
+//                    _x1 = _tmpDisplayObjP->GetPoint().x() + _tmpDisplayObjP->GetSize().width() / 2;
+//                    _y1 = _tmpDisplayObjP->GetPoint().y();
+//                    _tmpDisplayObjP = new DisplayElementClass( LineType, _x0, _y0, _x1, _y1 );
+//                    mDisplayElementS.push_back( _tmpDisplayObjP );
+//                    _tmpDisplayObjP->SetFront( Qt::green );
+//                }
 
             }
 
@@ -684,17 +687,236 @@ void GuiDrawControl::sub_DrawDisplayElementS( QPainter *pPainter )
 }
 
 /**
+ * @brief GuiDrawControl::fun_AdjustTreeLevelDisplay
+ *      按树的层进行收拢
+ * @param pCurrTreeLevel
+ * @return
+ */
+bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLevel, int pSpaceValue,
+                                                 std::map< int, std::list< DisplayElementClass * > * > * pAllElementS, int & pRetWidth )
+{
+    bool _retFlag;
+    int _spaceValue;
+    int _newX;
+    int i, j;
+    int _leftPointX;
+    int _rightPointX;
+
+    _retFlag = true;
+
+    DisplayElementClass * _tmpDisplayObj1P;
+    DisplayElementClass * _tmpDisplayObj2P;
+    DisplayElementClass * _parentDisplayObjP;
+    std::list< DisplayElementClass * > * _tmpDisplayListP;
+    std::map< int, int > _levelSpaceValueS;
+    std::map< int, int >::iterator _levelSpaceItm;
+
+    _leftPointX = 0x7fffffff;
+    _rightPointX = 0;
+    i = pCurrTreeLevel;
+    for( ; i <= pTreeLevel; i++ )
+    {
+        _tmpDisplayListP = new std::list< DisplayElementClass * >( ( *pAllElementS )[ i ]->begin(),
+                                                                   ( *pAllElementS )[ i ]->end() );
+        _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
+        {
+            return Value1->GetPoint().x() < Value2->GetPoint().x();
+        });
+
+        _tmpDisplayObj1P = _tmpDisplayListP->front();
+        _levelSpaceItm = _levelSpaceValueS.find( i );
+        if( _levelSpaceItm == _levelSpaceValueS.end() )
+        {
+            j = pSpaceValue;
+            _levelSpaceValueS[ i ] = j;
+        }
+        else
+        {
+            j = _levelSpaceItm->second;
+        }
+        _spaceValue = j * 2 * _tmpDisplayObj1P->GetSize().width();
+
+        while( !_tmpDisplayListP->empty() )
+        {
+            _retFlag = true;
+            _tmpDisplayObj1P = _tmpDisplayListP->front();
+            _tmpDisplayListP->pop_front();
+
+            _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
+            if( _parentDisplayObjP->GetSourceTreeNode()->JudgeLeftOrRight( _tmpDisplayObj1P->GetSourceTreeNode() ) == 1 )
+            {
+                //左子
+                _newX = _parentDisplayObjP->GetPoint().x() - _spaceValue / 2;
+            }
+            else
+            {
+                //右子
+                _newX = _parentDisplayObjP->GetPoint().x() + _spaceValue / 2;
+            }
+
+            _tmpDisplayObj1P->SetX( _newX );
+        }
+
+        //以下检查有没有坐标重叠
+        delete _tmpDisplayListP;
+
+        _tmpDisplayListP = new std::list< DisplayElementClass * >( ( *pAllElementS )[ i ]->begin(),
+                                                                   ( *pAllElementS )[ i ]->end() );
+        _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
+        {
+            return Value1->GetPoint().x() < Value2->GetPoint().x();
+        });
+
+        _tmpDisplayObj1P = _tmpDisplayListP->front();
+        _tmpDisplayListP->pop_front();
+        while( !_tmpDisplayListP->empty() )
+        {
+            _tmpDisplayObj2P = _tmpDisplayListP->front();
+            _tmpDisplayListP->pop_front();
+
+            if( _leftPointX > _tmpDisplayObj1P->GetPoint().x() )
+            {
+                _leftPointX = _tmpDisplayObj1P->GetPoint().x();
+            }
+
+            if( _rightPointX < ( _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width() ) )
+            {
+                _rightPointX = _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width();
+            }
+
+            if( ( _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width() ) >=
+                _tmpDisplayObj2P->GetPoint().x() )
+            {
+                _retFlag = false;
+                break;
+            }
+
+            _tmpDisplayObj1P = _tmpDisplayObj2P;
+        }
+
+        delete _tmpDisplayListP;
+
+        if( !_retFlag )
+        {
+            i -= 2; //退循环时会 +1, 代表当前层的上一层
+            _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
+            _spaceValue = _levelSpaceItm->second;
+            _spaceValue += 1;
+            _levelSpaceValueS[ i + 1 ] = _spaceValue;
+        }
+    }
+
+    pRetWidth = _rightPointX - _leftPointX;
+
+    i = 2;
+    for( ; i <= pTreeLevel; i++ )
+    {
+
+    }
+
+    return _retFlag;
+}
+
+/**
+ * @brief GuiDrawControl::sub_AdjustFitWindow
+ *      自动调整适应窗口大小
+ */
+void GuiDrawControl::sub_AdjustFitWindow( int & pRetWidth )
+{
+    int _tmpCurrLevel;
+    int _tmpLevel;
+    int _tmpAllLevel;
+    int i;
+
+    _tmpCurrLevel = 0;
+
+    if( mDisplayElementS.empty() )
+    {
+        return;
+    }
+
+    if( mDataSourceP != nullptr )
+    {
+        //不是树的显现
+        return;
+    }
+
+    std::list< DisplayElementClass * >::iterator _itm;
+    DisplayElementClass * _tmpDisplayObjP;
+    std::map< int, std::list< DisplayElementClass * > * > _tmpLevelElementS;
+    std::map< int, std::list< DisplayElementClass * > * >::iterator _tmpMapIte;
+    std::list< DisplayElementClass * > * _tmpElementListP;
+
+    for( _itm = mDisplayElementS.begin(); _itm != mDisplayElementS.end(); ++_itm )
+    {
+        _tmpDisplayObjP = *_itm;
+
+        if( _tmpDisplayObjP->GetSourceTreeNode() != nullptr )
+        {
+            _tmpLevel = _tmpDisplayObjP->GetSourceTreeNode()->GetLayer();
+
+            _tmpMapIte = _tmpLevelElementS.find( _tmpLevel );
+            if( _tmpMapIte != _tmpLevelElementS.end() )
+            {
+                _tmpElementListP = _tmpMapIte->second;
+            }
+            else
+            {
+                _tmpElementListP = new std::list< DisplayElementClass * >();
+                _tmpLevelElementS[ _tmpLevel ] = _tmpElementListP;
+            }
+
+            _tmpElementListP->push_back( _tmpDisplayObjP );
+
+            if( _tmpDisplayObjP->GetSourceTreeNode()->IsLeafNode() )
+            {
+                if( _tmpLevel > _tmpCurrLevel )
+                {
+                    _tmpCurrLevel = _tmpLevel;
+                }
+            }
+        }
+    }
+
+    _tmpAllLevel = _tmpCurrLevel;
+
+
+    bool _flag;
+    i = 1;
+    _tmpCurrLevel = 2;
+
+    _flag = fun_AdjustTreeLevelDisplay( _tmpCurrLevel, _tmpAllLevel, i, &_tmpLevelElementS, pRetWidth );
+
+    for( _tmpMapIte = _tmpLevelElementS.begin(); _tmpMapIte != _tmpLevelElementS.end(); ++_tmpMapIte )
+    {
+        _tmpElementListP = _tmpMapIte->second;
+        delete _tmpElementListP;
+    }
+}
+
+/**
  * @brief GuiDrawControl::sub_DrawToImage
  * @param pWidth
  * @param pHeight
  */
 void GuiDrawControl::sub_DrawToImage( int pWidth, int pHeight )
 {
+    int _tmpNewWidth;
+
+    if( mDisplayElementS.empty() )
+    {
+        return;
+    }
+
     if( mPainterImageP != nullptr )
     {
         delete mPainterImageP;
         mPainterImageP = nullptr;
     }
+
+    _tmpNewWidth = 0;
+
+    sub_AdjustFitWindow( _tmpNewWidth );
 
     if( pWidth < width() )
     {

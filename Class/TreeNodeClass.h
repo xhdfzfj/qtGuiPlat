@@ -53,6 +53,13 @@ public:
         return _retP;
     }
 
+    /**
+     * @brief JudgeLeftOrRight
+     * @param pChildP
+     * @return
+     *         1 左子
+     *         2 右子
+     */
     int JudgeLeftOrRight( TreeNodeClass< compareT, contentT > * pChildP )
     {
         int _retValue;
@@ -69,6 +76,19 @@ public:
         }
 
         return _retValue;
+    }
+
+    bool IsLeafNode()
+    {
+        bool _retFlag;
+
+        _retFlag = false;
+        if( ( mRightChildObjP == nullptr ) && ( mLeftChildObjP == nullptr ) )
+        {
+            _retFlag = true;
+        }
+
+        return _retFlag;
     }
 
 public:

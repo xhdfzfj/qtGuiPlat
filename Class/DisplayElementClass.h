@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QSize>
 #include <QPoint>
+#include "../Class/TreeNodeClass.h"
 
 typedef enum __DisplayType_e
 {
@@ -31,6 +32,11 @@ public:
     void SetDistance( int pStartDistance, int pEndDistance )    { mStartDistance = pStartDistance; mEndDistance = pEndDistance; }
     int GetStartDistance() { return mStartDistance; }
     int GetEndDistance() { return mEndDistance; }
+    void SetSourceTreeNode( TreeNodeClass< int, int > * pTreeNodeP ) {  mTreeNodeP = pTreeNodeP; }
+    TreeNodeClass< int, int > * GetSourceTreeNode() { return mTreeNodeP; }
+    void SetParentDisplayObj( DisplayElementClass * pObjP ) { mParentDisplayObjP = pObjP; }
+    DisplayElementClass * GetParentDisplayObj() { return mParentDisplayObjP; }
+    void SetX( int pX ) { mX = pX; }
 
 private:
     DisplayType_e mType;
@@ -47,6 +53,9 @@ private:
     QString mDisplayStr;
 
     QColor mFrontColor;
+
+    TreeNodeClass< int, int > * mTreeNodeP;
+    DisplayElementClass * mParentDisplayObjP;
 
 public:
     static const int EllipipeWidthSpace = 20;

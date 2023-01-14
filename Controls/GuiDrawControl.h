@@ -48,6 +48,9 @@ public:
                                TreeNodeClass< int, int > * pDestNodeP,
                                DisplayElementClass * & pRetParentDispObjP );
     void sub_DrawToImage( int pWidth, int pHeight );
+    void sub_AdjustFitWindow( int & pRetWidth );
+    bool fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLevel, int pSpaceValue,
+                                     std::map< int, std::list< DisplayElementClass * > * > * pAllElementS, int & pRetWidth );
 
 
     /*********************************

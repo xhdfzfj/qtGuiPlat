@@ -13,6 +13,8 @@ DisplayElementClass::DisplayElementClass(DisplayType_e pType, int X, int Y, QStr
     mX = X;
     mY = Y;
     mDisplayStr = pQStr;
+    mTreeNodeP = nullptr;
+    mParentDisplayObjP = nullptr;
 }
 
 DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int pWidth, int pHeight, QString pQStr )
@@ -24,6 +26,8 @@ DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int
 
     mWidth = pWidth;
     mHeight = pHeight;
+    mTreeNodeP = nullptr;
+    mParentDisplayObjP = nullptr;
 }
 
 DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int X1, int Y1 )
@@ -33,6 +37,8 @@ DisplayElementClass::DisplayElementClass( DisplayType_e pType, int X, int Y, int
     mY = Y;
     mWidth = X1;
     mHeight = Y1;
+    mTreeNodeP = nullptr;
+    mParentDisplayObjP = nullptr;
 }
 
 /**
