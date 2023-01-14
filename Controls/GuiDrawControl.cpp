@@ -626,11 +626,16 @@ void GuiDrawControl::sub_DrawBinaryTree()
 {
     int _tmpHeight;
 
-    _tmpHeight = mBinTreeObjP->fun_GetTreeHeight();
+    if( mBinTreeObjP != nullptr )
+    {
 
-    qDebug() << "tree height " << _tmpHeight;
+        _tmpHeight = mBinTreeObjP->fun_GetTreeHeight();
 
-    sub_CreateBTreeDrawElement( _tmpHeight );
+        qDebug() << "tree height " << _tmpHeight;
+
+        sub_CreateBTreeDrawElement( _tmpHeight );
+
+    }
 }
 
 /**

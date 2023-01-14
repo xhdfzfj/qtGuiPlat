@@ -173,7 +173,7 @@ Window {
     function onGuiWindowSizeChanage()
     {
         guiDrawControl.width = guiMainWindow.width - verticalScrollBar.width;
-        guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height;
+        guiDrawControl.height = guiMainRectangle.height -guiToolBarRect.height - horizontalScrollBar.height;
 
         guiDrawControl.sub_SizeChanage()
     }
