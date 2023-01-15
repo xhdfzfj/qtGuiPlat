@@ -119,37 +119,37 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int i, j;
     int _tmpLen;
 
-//    _tmpLen = pow( 2, pHeight ) - 1;
-//    //QRandomGenerator::global()->generate()
-//    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
-//    for( i = 0; i < _tmpLen; i++ )
-//    {
-//        _tmpNumberS.append(qrand() % 10000 );
-//        bool flag=true;
-//        while(flag)
-//        {
-//            for(j=0;j<i;j++)
-//            {
-//                if(_tmpNumberS[i]==_tmpNumberS[j])
-//                {
-//                    break;
-//                }
-//            }
-//            if(j<i)
-//            {
-//                _tmpNumberS[i]=rand() % 10000;
-//            }
-//            if(j==i)
-//            {
-//                flag=!flag;
-//            }
-//        }
-//    }
-
-    for( i = 0; i < 16; i++ )
+    _tmpLen = pow( 2, pHeight ) - 1;
+    //QRandomGenerator::global()->generate()
+    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
+    for( i = 0; i < _tmpLen; i++ )
     {
-        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+        _tmpNumberS.append(qrand() % 10000 );
+        bool flag=true;
+        while(flag)
+        {
+            for(j=0;j<i;j++)
+            {
+                if(_tmpNumberS[i]==_tmpNumberS[j])
+                {
+                    break;
+                }
+            }
+            if(j<i)
+            {
+                _tmpNumberS[i]=rand() % 10000;
+            }
+            if(j==i)
+            {
+                flag=!flag;
+            }
+        }
     }
+
+//    for( i = 0; i < 16; i++ )
+//    {
+//        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+//    }
     mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
 
     sub_DrawBinaryTree();
@@ -518,8 +518,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     int _AllHeight, _AllWidth;
     int i, j, z;
     int _x, _y;
-    int _x0, _y0;
-    int _x1, _y1;
+
 
     _width = _tmpFm.horizontalAdvance( _tmpTestString );
     _height = _tmpFm.height();
@@ -617,7 +616,7 @@ void GuiDrawControl::sub_CreateBTreeDrawElement( int pTreeHeight )
     }
 
     sub_DrawToImage( _AllWidth, _AllHeight );
-    //mPainterImageP->save( "1.jpg", "JPG" );
+    mPainterImageP->save( "1.jpg", "JPG" );
 
     update();
 }
@@ -808,10 +807,44 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 
     pRetWidth = _rightPointX - _leftPointX;
 
+    _tmpDisplayListP = ( *pAllElementS )[ 1 ];
+    _tmpDisplayObj1P = _tmpDisplayListP->front();
+
+    pRetWidth += 10;
+
+    int _x0, _y0;
+    int _x1, _y1;
+
+    int _tmpValue = pRetWidth / 2 - _tmpDisplayObj1P->GetSize().width() / 2;
+    _x0 = _tmpValue;
+    _tmpValue = _tmpValue - _tmpDisplayObj1P->GetPoint().x();
+    _tmpDisplayObj1P->SetX( _x0 );
     i = 2;
     for( ; i <= pTreeLevel; i++ )
     {
+        _tmpDisplayListP = ( *pAllElementS )[ i ];
 
+        while( !_tmpDisplayListP->empty() )
+        {
+            //联线的绘图对象
+            _tmpDisplayObj1P = _tmpDisplayListP->front();
+
+            _tmpDisplayObj1P->SetX( _tmpDisplayObj1P->GetPoint().x() + _tmpValue );
+            _tmpDisplayListP->pop_front();
+
+            _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
+            if( _parentDisplayObjP != nullptr )
+            {
+                _x0 = _parentDisplayObjP->GetPoint().x() + _parentDisplayObjP->GetSize().width() / 2;
+                _y0 = _parentDisplayObjP->GetPoint().y() + _parentDisplayObjP->GetSize().height();
+
+                _x1 = _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width() / 2;
+                _y1 = _tmpDisplayObj1P->GetPoint().y();
+                _tmpDisplayObj2P = new DisplayElementClass( LineType, _x0, _y0, _x1, _y1 );
+                mDisplayElementS.push_back( _tmpDisplayObj2P );
+                _tmpDisplayObj2P->SetFront( Qt::green );
+            }
+        }
     }
 
     return _retFlag;
@@ -914,19 +947,19 @@ void GuiDrawControl::sub_DrawToImage( int pWidth, int pHeight )
         mPainterImageP = nullptr;
     }
 
-    _tmpNewWidth = 0;
+    _tmpNewWidth = pWidth;
 
-    sub_AdjustFitWindow( _tmpNewWidth );
+    //sub_AdjustFitWindow( _tmpNewWidth );
 
-    if( pWidth < width() )
+    if( _tmpNewWidth < width() )
     {
-        pWidth = width();
+        _tmpNewWidth = width();
     }
     if( pHeight < height() )
     {
         pHeight = height();
     }
-    mPainterImageP = new QImage( pWidth, pHeight, QImage::Format_ARGB32 );
+    mPainterImageP = new QImage( _tmpNewWidth, pHeight, QImage::Format_ARGB32 );
     //mPainterImageP->fill( QColor(0,0,0,0) );
 
     QPainter _tmpPainter( mPainterImageP );

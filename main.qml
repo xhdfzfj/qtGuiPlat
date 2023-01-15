@@ -56,7 +56,7 @@ Window {
                     x: 120
                     onClicked:
                     {
-                        guiDrawControl.sub_CreateBinaryTree( 10 );
+                        guiDrawControl.sub_CreateBinaryTree( 5 );
                     }
 
                     ToolTip
