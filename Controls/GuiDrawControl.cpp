@@ -105,7 +105,7 @@ void GuiDrawControl::sub_SizeChanage()
  * @param pHeight
  */
 //int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
-int _tmpBinTreeNode[] = { 50, 45, 30, 46, 60, 70, 80, 90, 65, 20, 35, 33, 40, 75, 15, 25 };
+int _tmpBinTreeNode[] = { 3250, 45, 30, 46, 60, 70, 80, 34590, 6665, 20, 35, 33, 40, 75, 15, 25 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -120,7 +120,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int _tmpLen;
 
     _tmpLen = pow( 2, pHeight ) - 1;
-    //QRandomGenerator::global()->generate()
+
     qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
     for( i = 0; i < _tmpLen; i++ )
     {
@@ -778,6 +778,16 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
                 _leftPointX = _tmpDisplayObj1P->GetPoint().x();
             }
 
+            if( _leftPointX > _tmpDisplayObj2P->GetPoint().x() )
+            {
+                _leftPointX = _tmpDisplayObj2P->GetPoint().x();
+            }
+
+            if( _rightPointX < ( _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width() ) )
+            {
+                _rightPointX = _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width();
+            }
+
             if( _rightPointX < ( _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width() ) )
             {
                 _rightPointX = _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width();
@@ -810,15 +820,27 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
     _tmpDisplayListP = ( *pAllElementS )[ 1 ];
     _tmpDisplayObj1P = _tmpDisplayListP->front();
 
-    pRetWidth += 10;
+    //pRetWidth += 10;
 
+    //以下重亲调整X轴坐标
     int _x0, _y0;
     int _x1, _y1;
+    int _tmpWidth;
+    int _tmpValue;
 
-    int _tmpValue = pRetWidth / 2 - _tmpDisplayObj1P->GetSize().width() / 2;
-    _x0 = _tmpValue;
-    _tmpValue = _tmpValue - _tmpDisplayObj1P->GetPoint().x();
+    _tmpWidth = pRetWidth;
+
+    do
+    {
+        _tmpValue = _tmpWidth / 2 - _tmpDisplayObj1P->GetSize().width() / 2;
+        _x0 = _tmpValue;
+        _tmpValue = _tmpValue - _tmpDisplayObj1P->GetPoint().x();
+        _tmpWidth += 10;
+    }while( ( _leftPointX + _tmpValue ) <= X_SPACE );
+
+    pRetWidth = _tmpWidth;
     _tmpDisplayObj1P->SetX( _x0 );
+
     i = 2;
     for( ; i <= pTreeLevel; i++ )
     {
@@ -829,7 +851,9 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
             //联线的绘图对象
             _tmpDisplayObj1P = _tmpDisplayListP->front();
 
-            _tmpDisplayObj1P->SetX( _tmpDisplayObj1P->GetPoint().x() + _tmpValue );
+            _x0 = _tmpDisplayObj1P->GetPoint().x() + _tmpValue;
+
+            _tmpDisplayObj1P->SetX( _x0 );
             _tmpDisplayListP->pop_front();
 
             _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
@@ -949,7 +973,7 @@ void GuiDrawControl::sub_DrawToImage( int pWidth, int pHeight )
 
     _tmpNewWidth = pWidth;
 
-    //sub_AdjustFitWindow( _tmpNewWidth );
+    sub_AdjustFitWindow( _tmpNewWidth );
 
     if( _tmpNewWidth < width() )
     {
