@@ -105,7 +105,8 @@ void GuiDrawControl::sub_SizeChanage()
  * @param pHeight
  */
 //int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
-int _tmpBinTreeNode[] = { 3250, 45, 30, 46, 60, 70, 80, 34590, 6665, 20, 35, 33, 40, 75, 15, 25 };
+//int _tmpBinTreeNode[] = { 3250, 45, 30, 46, 60, 70, 80, 34590, 6665, 20, 35, 33, 40, 75, 15, 25 };
+int _tmpBinTreeNode[] = { 4281, 1745, 9042, 346, 3418, 4490, 9571, 138, 1173, 3381, 4158, 5767, 9350, 9683, 1141, 1618, 3173, 3886, 5750, 7270 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -121,35 +122,35 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 
     _tmpLen = pow( 2, pHeight ) - 1;
 
-    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
-    for( i = 0; i < _tmpLen; i++ )
-    {
-        _tmpNumberS.append(qrand() % 10000 );
-        bool flag=true;
-        while(flag)
-        {
-            for(j=0;j<i;j++)
-            {
-                if(_tmpNumberS[i]==_tmpNumberS[j])
-                {
-                    break;
-                }
-            }
-            if(j<i)
-            {
-                _tmpNumberS[i]=rand() % 10000;
-            }
-            if(j==i)
-            {
-                flag=!flag;
-            }
-        }
-    }
-
-//    for( i = 0; i < 16; i++ )
+//    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
+//    for( i = 0; i < _tmpLen; i++ )
 //    {
-//        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+//        _tmpNumberS.append(qrand() % 10000 );
+//        bool flag=true;
+//        while(flag)
+//        {
+//            for(j=0;j<i;j++)
+//            {
+//                if(_tmpNumberS[i]==_tmpNumberS[j])
+//                {
+//                    break;
+//                }
+//            }
+//            if(j<i)
+//            {
+//                _tmpNumberS[i]=rand() % 10000;
+//            }
+//            if(j==i)
+//            {
+//                flag=!flag;
+//            }
+//        }
 //    }
+
+    for( i = 0; i < 20; i++ )
+    {
+        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+    }
     mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
 
     sub_DrawBinaryTree();
@@ -733,13 +734,14 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
         {
             j = _levelSpaceItm->second;
         }
-        _spaceValue = j * 2 * _tmpDisplayObj1P->GetSize().width();
 
         while( !_tmpDisplayListP->empty() )
         {
             _retFlag = true;
             _tmpDisplayObj1P = _tmpDisplayListP->front();
             _tmpDisplayListP->pop_front();
+
+            _spaceValue = 2 * _tmpDisplayObj1P->GetSize().width() + ( j * _tmpDisplayObj1P->GetSize().width() );
 
             _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
             if( _parentDisplayObjP->GetSourceTreeNode()->JudgeLeftOrRight( _tmpDisplayObj1P->GetSourceTreeNode() ) == 1 )
@@ -761,10 +763,10 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 
         _tmpDisplayListP = new std::list< DisplayElementClass * >( ( *pAllElementS )[ i ]->begin(),
                                                                    ( *pAllElementS )[ i ]->end() );
-        _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
-        {
-            return Value1->GetPoint().x() < Value2->GetPoint().x();
-        });
+//        _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
+//        {
+//            return Value1->GetPoint().x() < Value2->GetPoint().x();
+//        });
 
         _tmpDisplayObj1P = _tmpDisplayListP->front();
         _tmpDisplayListP->pop_front();
