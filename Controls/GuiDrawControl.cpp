@@ -147,7 +147,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 //        }
 //    }
 
-    for( i = 0; i < 20; i++ )
+    for( i = 0; i < /*16*/20; i++ )
     {
         _tmpNumberS.append( _tmpBinTreeNode[ i ] );
     }
@@ -706,10 +706,13 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 
     DisplayElementClass * _tmpDisplayObj1P;
     DisplayElementClass * _tmpDisplayObj2P;
+    DisplayElementClass * _tmpDisplayObj3P;
+    DisplayElementClass * _tmpDisplayObj4P;
     DisplayElementClass * _parentDisplayObjP;
     std::list< DisplayElementClass * > * _tmpDisplayListP;
     std::map< int, int > _levelSpaceValueS;
     std::map< int, int >::iterator _levelSpaceItm;
+    bool _tmpFlag;
 
     _leftPointX = 0x7fffffff;
     _rightPointX = 0;
@@ -768,12 +771,19 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 //            return Value1->GetPoint().x() < Value2->GetPoint().x();
 //        });
 
-        _tmpDisplayObj1P = _tmpDisplayListP->front();
-        _tmpDisplayListP->pop_front();
-        while( !_tmpDisplayListP->empty() )
+        std::list< DisplayElementClass * >::iterator _tmpItm;
+
+        _tmpItm = _tmpDisplayListP->begin();
+        _tmpDisplayObj1P = *_tmpItm;
+        _tmpItm++;
+        //_tmpDisplayListP->pop_front();
+        //while( !_tmpDisplayListP->empty() )
+        while( _tmpItm != _tmpDisplayListP->end() )
         {
-            _tmpDisplayObj2P = _tmpDisplayListP->front();
-            _tmpDisplayListP->pop_front();
+//            _tmpDisplayObj2P = _tmpDisplayListP->front();
+//            _tmpDisplayListP->pop_front();
+
+            _tmpDisplayObj2P = *_tmpItm;
 
             if( _leftPointX > _tmpDisplayObj1P->GetPoint().x() )
             {
@@ -795,25 +805,92 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
                 _rightPointX = _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width();
             }
 
+            _tmpFlag = false;
             if( ( _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width() ) >=
                 _tmpDisplayObj2P->GetPoint().x() )
             {
+                if( _tmpDisplayObj1P->GetParentDisplayObj() != _tmpDisplayObj2P->GetParentDisplayObj() )
+                {
+                    _tmpFlag = true;    //代表是不同父节点的左右节点相隔太近
+                    --_tmpItm;
+                    if( _tmpItm != _tmpDisplayListP->begin() )
+                    {
+                        --_tmpItm;
+
+                        _tmpDisplayObj3P = *( _tmpItm );
+
+                        _tmpItm++;
+                        _tmpItm++;
+                    }
+                    else
+                    {
+                        _tmpDisplayObj3P = nullptr;
+                        _tmpItm++;
+                    }
+
+                    _tmpItm++;
+
+                    if( _tmpItm != _tmpDisplayListP->end() )
+                    {
+                        _tmpDisplayObj4P = *( _tmpItm );
+                    }
+                    else
+                    {
+                        _tmpDisplayObj4P = nullptr;
+                    }
+
+                    _tmpItm--;  //恢复到原来的位置
+
+                    _tmpFlag = fun_AdjustDisplayNode( _tmpDisplayObj1P, _tmpDisplayObj2P, _tmpDisplayObj3P, _tmpDisplayObj4P );
+                    if( _tmpFlag )
+                    {
+                        _tmpDisplayObj1P = _tmpDisplayObj2P;
+                        _tmpItm++;
+                        continue;
+                    }
+                }
                 _retFlag = false;
                 break;
             }
 
             _tmpDisplayObj1P = _tmpDisplayObj2P;
+            _tmpItm++;
         }
 
+        _tmpDisplayListP->clear();
         delete _tmpDisplayListP;
 
         if( !_retFlag )
         {
-            i -= 2; //退循环时会 +1, 代表当前层的上一层
-            _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
-            _spaceValue = _levelSpaceItm->second;
-            _spaceValue += 1;
-            _levelSpaceValueS[ i + 1 ] = _spaceValue;
+//            if( _tmpFlag )
+//            {
+//                i -= 1; //退循环时会 +1, 代表当前层
+//                _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
+//                _spaceValue = _levelSpaceItm->second;
+//                _spaceValue -= 1;
+//                if( _spaceValue > 0 )
+//                {
+//                    _levelSpaceValueS[ i + 1 ] = _spaceValue;
+//                }
+//                else
+//                {
+//                    _levelSpaceValueS[ i + 1 ] = 3;
+//                    i -= 1; //代表退到当前层的上一层
+
+//                    _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
+//                    _spaceValue = _levelSpaceItm->second;
+//                    _spaceValue += 1;
+//                    _levelSpaceValueS[ i + 1 ] = _spaceValue;
+//                }
+//            }
+//            else
+            {
+                i -= 2; //退循环时会 +1, 代表当前层的上一层
+                _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
+                _spaceValue = _levelSpaceItm->second;
+                _spaceValue += 1;
+                _levelSpaceValueS[ i + 1 ] = _spaceValue;
+            }
         }
     }
 
@@ -872,6 +949,61 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
             }
         }
     }
+
+    return _retFlag;
+}
+
+/**
+ * @brief GuiDrawControl::fun_AdjustDisplayNode
+ * @param pDisplayObj1P
+ * @param pDisplayObj2P
+ * @param pDisplayObj3P
+ * @param pDisplayObj4P
+ * @return
+ */
+bool GuiDrawControl::fun_AdjustDisplayNode( DisplayElementClass * pDisplayObj1P,
+                                            DisplayElementClass * pDisplayObj2P,
+                                            DisplayElementClass * pDisplayObj3P,
+                                            DisplayElementClass * pDisplayObj4P )
+{
+    bool _retFlag;
+    int _tmpValue;
+    int _startX;
+    int _endX;
+
+    _retFlag = false;   //调整失败
+
+    if( pDisplayObj3P != nullptr )
+    {
+        _startX = pDisplayObj3P->GetPoint().x() + pDisplayObj3P->GetSize().width() + X_SPACE;
+    }
+    else
+    {
+        _startX = X_SPACE;
+    }
+
+    if( pDisplayObj4P != nullptr )
+    {
+        _endX = pDisplayObj4P->GetPoint().x() - 2;
+    }
+    else
+    {
+        _endX = pDisplayObj2P->GetPoint().x() + pDisplayObj2P->GetSize().width();
+    }
+
+    if( _endX < _startX )
+    {
+        _tmpValue = _startX;
+        _startX = _endX;
+        _endX = _tmpValue;
+    }
+
+    pDisplayObj1P->SetX( _startX );
+
+    _tmpValue = _startX + pDisplayObj2P->GetSize().width() + 5;
+    pDisplayObj2P->SetX( _tmpValue );
+
+    _retFlag = true;
 
     return _retFlag;
 }

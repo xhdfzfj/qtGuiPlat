@@ -51,7 +51,10 @@ public:
     void sub_AdjustFitWindow( int & pRetWidth );
     bool fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLevel, int pSpaceValue,
                                      std::map< int, std::list< DisplayElementClass * > * > * pAllElementS, int & pRetWidth );
-
+    bool fun_AdjustDisplayNode( DisplayElementClass * pDisplayObj1P,
+                                DisplayElementClass * pDisplayObj2P,
+                                DisplayElementClass * pDisplayObj3P,
+                                DisplayElementClass * pDisplayObj4P );
 
     /*********************************
      * 系统重载
