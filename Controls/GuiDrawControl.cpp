@@ -106,7 +106,8 @@ void GuiDrawControl::sub_SizeChanage()
  */
 //int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
 //int _tmpBinTreeNode[] = { 3250, 45, 30, 46, 60, 70, 80, 34590, 6665, 20, 35, 33, 40, 75, 15, 25 };
-int _tmpBinTreeNode[] = { 4281, 1745, 9042, 346, 3418, 4490, 9571, 138, 1173, 3381, 4158, 5767, 9350, 9683, 1141, 1618, 3173, 3886, 5750, 7270 };
+//int _tmpBinTreeNode[] = { 4281, 1745, 9042, 346, 3418, 4490, 9571, 138, 1173, 3381, 4158, 5767, 9350, 9683, 1141, 1618, 3173, 3886, 5750, 7270 };
+int _tmpBinTreeNode[] = { 6487, 6146, 8542, 2778, 6449, 8426, 8872, 1323, 3255, 6216, 6459, 7837, 8469, 8713, 9876, 1284, 2137, 3197, 4485, 7759, 9242 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -147,7 +148,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 //        }
 //    }
 
-    for( i = 0; i < /*16*/20; i++ )
+    for( i = 0; i < /*16*/21; i++ )
     {
         _tmpNumberS.append( _tmpBinTreeNode[ i ] );
     }
@@ -744,6 +745,11 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
             _tmpDisplayObj1P = _tmpDisplayListP->front();
             _tmpDisplayListP->pop_front();
 
+            if( _tmpDisplayObj1P->GetDiplayString() == "6449" )
+            {
+                printf( "debug point\r\n" );
+            }
+
             _spaceValue = 2 * _tmpDisplayObj1P->GetSize().width() + ( j * _tmpDisplayObj1P->GetSize().width() );
 
             _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
@@ -973,6 +979,10 @@ bool GuiDrawControl::fun_AdjustDisplayNode( DisplayElementClass * pDisplayObj1P,
 
     _retFlag = false;   //调整失败
 
+    if( pDisplayObj1P->GetPoint().x() >= pDisplayObj2P->GetPoint().x() )
+    {
+        return _retFlag;
+    }
     if( pDisplayObj3P != nullptr )
     {
         _startX = pDisplayObj3P->GetPoint().x() + pDisplayObj3P->GetSize().width() + X_SPACE;
