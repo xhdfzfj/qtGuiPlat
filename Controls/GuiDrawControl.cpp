@@ -107,7 +107,16 @@ void GuiDrawControl::sub_SizeChanage()
 //int _tmpBinTreeNode[] = { 50, 40, 60, 45, 55, 65 };
 //int _tmpBinTreeNode[] = { 3250, 45, 30, 46, 60, 70, 80, 34590, 6665, 20, 35, 33, 40, 75, 15, 25 };
 //int _tmpBinTreeNode[] = { 4281, 1745, 9042, 346, 3418, 4490, 9571, 138, 1173, 3381, 4158, 5767, 9350, 9683, 1141, 1618, 3173, 3886, 5750, 7270 };
-int _tmpBinTreeNode[] = { 6487, 6146, 8542, 2778, 6449, 8426, 8872, 1323, 3255, 6216, 6459, 7837, 8469, 8713, 9876, 1284, 2137, 3197, 4485, 7759, 9242 };
+//int _tmpBinTreeNode[] = { 6487, 6146, 8542, 2778, 6449, 8426, 8872, 1323, 3255, 6216, 6459, 7837, 8469, 8713, 9876, 1284, 2137, 3197, 4485, 7759, 9242 };
+int _tmpBinTreeNode[] = { 6354,
+                          6187, 9346,
+                          1483, 6209, 8166, 9851,
+                          1178, 5652, 7990, 8825, 9776,
+                          410, 2272, 7119, 8072, 8357,
+                          310, 2024, 4754, 6594, 7358,
+                          1506, 3602, 5388, 7238, 7381,
+                          1688, 3369, 7303,
+                          2315 };
 void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 {
     if( mBinTreeObjP != nullptr )
@@ -121,7 +130,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int i, j;
     int _tmpLen;
 
-    _tmpLen = pow( 2, pHeight ) - 1;
+//    _tmpLen = pow( 2, pHeight ) - 1;
 
 //    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
 //    for( i = 0; i < _tmpLen; i++ )
@@ -148,7 +157,7 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
 //        }
 //    }
 
-    for( i = 0; i < /*16*/21; i++ )
+    for( i = 0; i < /*16*/30; i++ )
     {
         _tmpNumberS.append( _tmpBinTreeNode[ i ] );
     }
@@ -697,6 +706,7 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
                                                  std::map< int, std::list< DisplayElementClass * > * > * pAllElementS, int & pRetWidth )
 {
     bool _retFlag;
+    int _changeFlag;
     int _spaceValue;
     int _newX;
     int i, j;
@@ -713,13 +723,17 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
     std::list< DisplayElementClass * > * _tmpDisplayListP;
     std::map< int, int > _levelSpaceValueS;
     std::map< int, int >::iterator _levelSpaceItm;
-    bool _tmpFlag;
 
     _leftPointX = 0x7fffffff;
     _rightPointX = 0;
     i = pCurrTreeLevel;
     for( ; i <= pTreeLevel; i++ )
     {
+        if( i == 8 )
+        {
+            printf( "test test test" );
+        }
+        _changeFlag = 0;
         _tmpDisplayListP = new std::list< DisplayElementClass * >( ( *pAllElementS )[ i ]->begin(),
                                                                    ( *pAllElementS )[ i ]->end() );
         _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
@@ -745,11 +759,6 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
             _tmpDisplayObj1P = _tmpDisplayListP->front();
             _tmpDisplayListP->pop_front();
 
-            if( _tmpDisplayObj1P->GetDiplayString() == "6449" )
-            {
-                printf( "debug point\r\n" );
-            }
-
             _spaceValue = 2 * _tmpDisplayObj1P->GetSize().width() + ( j * _tmpDisplayObj1P->GetSize().width() );
 
             _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
@@ -772,10 +781,6 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 
         _tmpDisplayListP = new std::list< DisplayElementClass * >( ( *pAllElementS )[ i ]->begin(),
                                                                    ( *pAllElementS )[ i ]->end() );
-//        _tmpDisplayListP->sort( []( DisplayElementClass * Value1, DisplayElementClass * Value2)
-//        {
-//            return Value1->GetPoint().x() < Value2->GetPoint().x();
-//        });
 
         std::list< DisplayElementClass * >::iterator _tmpItm;
 
@@ -811,49 +816,32 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
                 _rightPointX = _tmpDisplayObj2P->GetPoint().x() + _tmpDisplayObj2P->GetSize().width();
             }
 
-            _tmpFlag = false;
             if( ( _tmpDisplayObj1P->GetPoint().x() + _tmpDisplayObj1P->GetSize().width() ) >=
                 _tmpDisplayObj2P->GetPoint().x() )
             {
                 if( _tmpDisplayObj1P->GetParentDisplayObj() != _tmpDisplayObj2P->GetParentDisplayObj() )
                 {
-                    _tmpFlag = true;    //代表是不同父节点的左右节点相隔太近
-                    --_tmpItm;
-                    if( _tmpItm != _tmpDisplayListP->begin() )
+                    //代表是不同父节点的左右节点相隔太近
+                    if( i > 3 )
                     {
-                        --_tmpItm;
-
-                        _tmpDisplayObj3P = *( _tmpItm );
-
-                        _tmpItm++;
-                        _tmpItm++;
+                        if( _tmpDisplayObj1P->GetParentDisplayObj()->GetParentDisplayObj() !=
+                            _tmpDisplayObj2P->GetParentDisplayObj()->GetParentDisplayObj() )
+                        {
+                            _changeFlag = 1;
+                        }
+                        else
+                        {
+                            _changeFlag = 0;
+                        }
                     }
                     else
                     {
-                        _tmpDisplayObj3P = nullptr;
-                        _tmpItm++;
+                        _changeFlag = 0;
                     }
-
-                    _tmpItm++;
-
-                    if( _tmpItm != _tmpDisplayListP->end() )
-                    {
-                        _tmpDisplayObj4P = *( _tmpItm );
-                    }
-                    else
-                    {
-                        _tmpDisplayObj4P = nullptr;
-                    }
-
-                    _tmpItm--;  //恢复到原来的位置
-
-                    _tmpFlag = fun_AdjustDisplayNode( _tmpDisplayObj1P, _tmpDisplayObj2P, _tmpDisplayObj3P, _tmpDisplayObj4P );
-                    if( _tmpFlag )
-                    {
-                        _tmpDisplayObj1P = _tmpDisplayObj2P;
-                        _tmpItm++;
-                        continue;
-                    }
+                }
+                else
+                {
+                    _changeFlag = 0;
                 }
                 _retFlag = false;
                 break;
@@ -868,35 +856,28 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
 
         if( !_retFlag )
         {
-//            if( _tmpFlag )
+            j = fun_FindSameParent( _tmpDisplayObj1P, _tmpDisplayObj2P );   //查找共同的父节点
+//            i -= 2; //退循环时会 +1, 代表当前层的上一层
+//            if( i <= 1 )
 //            {
-//                i -= 1; //退循环时会 +1, 代表当前层
+//                _changeFlag = 0;
+//            }
+//            if( _changeFlag == 0 )
+//            {
 //                _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
 //                _spaceValue = _levelSpaceItm->second;
-//                _spaceValue -= 1;
-//                if( _spaceValue > 0 )
-//                {
-//                    _levelSpaceValueS[ i + 1 ] = _spaceValue;
-//                }
-//                else
-//                {
-//                    _levelSpaceValueS[ i + 1 ] = 3;
-//                    i -= 1; //代表退到当前层的上一层
-
-//                    _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
-//                    _spaceValue = _levelSpaceItm->second;
-//                    _spaceValue += 1;
-//                    _levelSpaceValueS[ i + 1 ] = _spaceValue;
-//                }
+//                _spaceValue += 1;
+//                _levelSpaceValueS[ i + 1 ] = _spaceValue;
 //            }
 //            else
-            {
-                i -= 2; //退循环时会 +1, 代表当前层的上一层
-                _levelSpaceItm = _levelSpaceValueS.find( i + 1 );
-                _spaceValue = _levelSpaceItm->second;
-                _spaceValue += 1;
-                _levelSpaceValueS[ i + 1 ] = _spaceValue;
-            }
+//            {
+//                //代表是不同父节点的左右节点相隔太近
+//                _levelSpaceItm = _levelSpaceValueS.find( i );
+//                _spaceValue = _levelSpaceItm->second;
+//                _spaceValue += 1;
+//                _levelSpaceValueS[ i ] = _spaceValue;
+//                i -= 1; //由于循环时会 +1，代表当前层的上二层
+//            }
         }
     }
 
@@ -967,56 +948,56 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
  * @param pDisplayObj4P
  * @return
  */
-bool GuiDrawControl::fun_AdjustDisplayNode( DisplayElementClass * pDisplayObj1P,
-                                            DisplayElementClass * pDisplayObj2P,
-                                            DisplayElementClass * pDisplayObj3P,
-                                            DisplayElementClass * pDisplayObj4P )
-{
-    bool _retFlag;
-    int _tmpValue;
-    int _startX;
-    int _endX;
+//bool GuiDrawControl::fun_AdjustDisplayNode( DisplayElementClass * pDisplayObj1P,
+//                                            DisplayElementClass * pDisplayObj2P,
+//                                            DisplayElementClass * pDisplayObj3P,
+//                                            DisplayElementClass * pDisplayObj4P )
+//{
+//    bool _retFlag;
+//    int _tmpValue;
+//    int _startX;
+//    int _endX;
 
-    _retFlag = false;   //调整失败
+//    _retFlag = false;   //调整失败
 
-    if( pDisplayObj1P->GetPoint().x() >= pDisplayObj2P->GetPoint().x() )
-    {
-        return _retFlag;
-    }
-    if( pDisplayObj3P != nullptr )
-    {
-        _startX = pDisplayObj3P->GetPoint().x() + pDisplayObj3P->GetSize().width() + X_SPACE;
-    }
-    else
-    {
-        _startX = X_SPACE;
-    }
+//    if( pDisplayObj1P->GetPoint().x() >= pDisplayObj2P->GetPoint().x() )
+//    {
+//        return _retFlag;
+//    }
+//    if( pDisplayObj3P != nullptr )
+//    {
+//        _startX = pDisplayObj3P->GetPoint().x() + pDisplayObj3P->GetSize().width() + X_SPACE;
+//    }
+//    else
+//    {
+//        _startX = X_SPACE;
+//    }
 
-    if( pDisplayObj4P != nullptr )
-    {
-        _endX = pDisplayObj4P->GetPoint().x() - 2;
-    }
-    else
-    {
-        _endX = pDisplayObj2P->GetPoint().x() + pDisplayObj2P->GetSize().width();
-    }
+//    if( pDisplayObj4P != nullptr )
+//    {
+//        _endX = pDisplayObj4P->GetPoint().x() - 2;
+//    }
+//    else
+//    {
+//        _endX = pDisplayObj2P->GetPoint().x() + pDisplayObj2P->GetSize().width();
+//    }
 
-    if( _endX < _startX )
-    {
-        _tmpValue = _startX;
-        _startX = _endX;
-        _endX = _tmpValue;
-    }
+//    if( _endX < _startX )
+//    {
+//        _tmpValue = _startX;
+//        _startX = _endX;
+//        _endX = _tmpValue;
+//    }
 
-    pDisplayObj1P->SetX( _startX );
+//    pDisplayObj1P->SetX( _startX );
 
-    _tmpValue = _startX + pDisplayObj2P->GetSize().width() + 5;
-    pDisplayObj2P->SetX( _tmpValue );
+//    _tmpValue = _startX + pDisplayObj2P->GetSize().width() + 5;
+//    pDisplayObj2P->SetX( _tmpValue );
 
-    _retFlag = true;
+//    _retFlag = true;
 
-    return _retFlag;
-}
+//    return _retFlag;
+//}
 
 /**
  * @brief GuiDrawControl::sub_AdjustFitWindow
