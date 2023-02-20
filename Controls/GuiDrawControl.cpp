@@ -511,6 +511,62 @@ int GuiDrawControl::fun_BTreeXcoorndinate( std::map< int64_t, DisplayElementClas
     return _retValue;
 }
 
+/**
+ * @brief GuiDrawControl::fun_FindSameParent
+ *      获取节点的公同祖先
+ * @param pDisplayObj1P
+ * @param pDisplayObj2P
+ * @return
+ *      0 代表失败
+ *      其它 代表公同祖先的层
+ */
+int GuiDrawControl::fun_FindSameParent( DisplayElementClass * pDisplayObj1P, DisplayElementClass * pDisplayObj2P )
+{
+    int _retValue;
+    bool _flag;
+    DisplayElementClass * _tmpObjP1;
+    DisplayElementClass * _tmpObjP2;
+
+    _tmpObjP1 = pDisplayObj1P->GetParentDisplayObj();
+    _tmpObjP2 = pDisplayObj2P->GetParentDisplayObj();
+
+    while( _tmpObjP1->GetSourceTreeNode()->GetLayer() > _tmpObjP2->GetSourceTreeNode()->GetLayer() )
+    {
+        _tmpObjP1 = _tmpObjP1->GetParentDisplayObj();
+    }
+
+    while( _tmpObjP1->GetSourceTreeNode()->GetLayer() < _tmpObjP2->GetSourceTreeNode()->GetLayer() )
+    {
+        _tmpObjP2 = _tmpObjP2->GetParentDisplayObj();
+    }
+
+    _retValue = 0;
+    _flag = true;
+
+    while( _flag )
+    {
+        _tmpObjP1 = _tmpObjP1->GetParentDisplayObj();
+        _tmpObjP2 = _tmpObjP2->GetParentDisplayObj();
+
+        if( _tmpObjP1->GetSourceTreeNode()->GetLayer() == 1 )
+        {
+            break;
+        }
+        if( _tmpObjP1 == _tmpObjP2 )
+        {
+            _flag = false;
+        }
+    }
+
+    if( !_flag )
+    {
+        //有找到共同的祖先
+        _retValue = _tmpObjP1->GetSourceTreeNode()->GetLayer();
+    }
+
+    return _retValue;
+}
+
 
 /**
  * @brief GuiDrawControl::sub_CreateBTreeDrawElement
@@ -857,6 +913,7 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
         if( !_retFlag )
         {
             j = fun_FindSameParent( _tmpDisplayObj1P, _tmpDisplayObj2P );   //查找共同的父节点
+            if( j >)
 //            i -= 2; //退循环时会 +1, 代表当前层的上一层
 //            if( i <= 1 )
 //            {
