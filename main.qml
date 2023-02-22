@@ -64,7 +64,7 @@ Window {
                         delay: 50   //50ms后出现
                         timeout: 2000 //2秒后消失
                         visible: selfFitBtn.hovered //mouse进入button中
-                        text:qsTr( "生成高度10的二叉树" )
+                        text:qsTr( "生成高度5的二叉树" )
                     }
 
                 }

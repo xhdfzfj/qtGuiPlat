@@ -130,37 +130,37 @@ void GuiDrawControl::sub_CreateBinaryTree( int pHeight )
     int i, j;
     int _tmpLen;
 
-//    _tmpLen = pow( 2, pHeight ) - 1;
+    _tmpLen = pow( 2, pHeight ) - 1;
 
-//    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
-//    for( i = 0; i < _tmpLen; i++ )
-//    {
-//        _tmpNumberS.append(qrand() % 10000 );
-//        bool flag=true;
-//        while(flag)
-//        {
-//            for(j=0;j<i;j++)
-//            {
-//                if(_tmpNumberS[i]==_tmpNumberS[j])
-//                {
-//                    break;
-//                }
-//            }
-//            if(j<i)
-//            {
-//                _tmpNumberS[i]=rand() % 10000;
-//            }
-//            if(j==i)
-//            {
-//                flag=!flag;
-//            }
-//        }
-//    }
-
-    for( i = 0; i < /*16*/30; i++ )
+    qsrand( QTime(0,0,0).secsTo( QTime::currentTime()));
+    for( i = 0; i < _tmpLen; i++ )
     {
-        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+        _tmpNumberS.append(qrand() % 10000 );
+        bool flag=true;
+        while(flag)
+        {
+            for(j=0;j<i;j++)
+            {
+                if(_tmpNumberS[i]==_tmpNumberS[j])
+                {
+                    break;
+                }
+            }
+            if(j<i)
+            {
+                _tmpNumberS[i]=rand() % 10000;
+            }
+            if(j==i)
+            {
+                flag=!flag;
+            }
+        }
     }
+
+//    for( i = 0; i < /*16*/31; i++ )
+//    {
+//        _tmpNumberS.append( _tmpBinTreeNode[ i ] );
+//    }
     mBinTreeObjP->sub_CreateTree( std::list< int >( _tmpNumberS.begin(), _tmpNumberS.end() ) );
 
     sub_DrawBinaryTree();
@@ -548,13 +548,13 @@ int GuiDrawControl::fun_FindSameParent( DisplayElementClass * pDisplayObj1P, Dis
         _tmpObjP1 = _tmpObjP1->GetParentDisplayObj();
         _tmpObjP2 = _tmpObjP2->GetParentDisplayObj();
 
-        if( _tmpObjP1->GetSourceTreeNode()->GetLayer() == 1 )
-        {
-            break;
-        }
         if( _tmpObjP1 == _tmpObjP2 )
         {
             _flag = false;
+        }
+        if( _tmpObjP1->GetSourceTreeNode()->GetLayer() == 1 )
+        {
+            break;
         }
     }
 
@@ -815,7 +815,7 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
             _tmpDisplayObj1P = _tmpDisplayListP->front();
             _tmpDisplayListP->pop_front();
 
-            _spaceValue = 2 * _tmpDisplayObj1P->GetSize().width() + ( j * _tmpDisplayObj1P->GetSize().width() );
+            _spaceValue = 1 * _tmpDisplayObj1P->GetSize().width() + ( j * _tmpDisplayObj1P->GetSize().width() );
 
             _parentDisplayObjP = _tmpDisplayObj1P->GetParentDisplayObj();
             if( _parentDisplayObjP->GetSourceTreeNode()->JudgeLeftOrRight( _tmpDisplayObj1P->GetSourceTreeNode() ) == 1 )
@@ -913,7 +913,15 @@ bool GuiDrawControl::fun_AdjustTreeLevelDisplay( int pCurrTreeLevel, int pTreeLe
         if( !_retFlag )
         {
             j = fun_FindSameParent( _tmpDisplayObj1P, _tmpDisplayObj2P );   //查找共同的父节点
-            if( j >)
+            if( j > 0 )
+            {
+                //j代表共同的节点
+                _levelSpaceItm = _levelSpaceValueS.find( j + 1 );
+                _spaceValue = _levelSpaceItm->second;
+                _spaceValue += 1;
+                _levelSpaceValueS[ j + 1 ] = _spaceValue;
+                i = j;
+            }
 //            i -= 2; //退循环时会 +1, 代表当前层的上一层
 //            if( i <= 1 )
 //            {

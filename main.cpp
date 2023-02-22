@@ -1,8 +1,7 @@
-#include <QGuiApplication>
+﻿#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "Controls/GuiDrawControl.h"
-
 
 int main(int argc, char *argv[])
 {
